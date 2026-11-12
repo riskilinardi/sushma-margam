@@ -19,10 +19,12 @@ export function IntroGate({ children }: { children: ReactNode }) {
       <div inert={stage !== "open"}>{children}</div>
 
       {stage !== "open" && (
+        // Full screen height (lvh) rather than inset-0, which on iOS Safari
+        // stops at the floating toolbar and lets the page show underneath.
         <div
           data-stage={stage}
           onAnimationEnd={handleAnimationEnd}
-          className="intro fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 px-6"
+          className="intro fixed inset-x-0 top-0 z-50 flex h-lvh flex-col items-center justify-center gap-6 px-6"
         >
           <p className="font-display text-xs tracking-[0.3em] text-ivory/50 uppercase">
             {event.dancer} · {event.title}

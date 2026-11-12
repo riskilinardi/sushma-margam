@@ -7,7 +7,8 @@ export const event = {
   startsAt: new Date("2026-12-05T19:30:00+08:00"),
   arriveBy: "7:15 PM",
   venue: {
-    name: "Black Box, Nrityalaya Aesthetics Society",
+    name: "Black Box",
+    host: "Nrityalaya Aesthetics Society",
     address: [
       "231 Bain Street",
       "#04-01 Bras Basah Complex",

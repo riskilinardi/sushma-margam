@@ -68,7 +68,7 @@ export function Countdown({ to, className = "" }: CountdownProps) {
           aria-hidden="true"
           className="px-5 text-center sm:px-7 lg:first:pl-0"
         >
-          <span className="block text-gilded font-display text-4xl sm:text-5xl">
+          <span className="block text-gilded font-display text-3xl sm:text-4xl lg:text-5xl">
             {value === undefined ? "–" : String(value).padStart(2, "0")}
           </span>
           <span className="mt-2 block font-display text-[0.65rem] tracking-[0.3em] text-ivory/60 uppercase">
