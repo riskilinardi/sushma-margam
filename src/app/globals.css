@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --maroon-950: #1a0507;
+  --maroon-900: #2b0a0d;
+  --maroon-800: #4a1016;
+  --maroon-700: #7a1c22;
+
+  --gold-200: #f1dda3;
+  --gold-500: #c9a24d;
+  --gold-700: #8a6526;
+  --gold-900: #4f3812;
+
+  --ivory: #f4ead8;
+}
+
+@theme inline {
+  --color-maroon-950: var(--maroon-950);
+  --color-maroon-900: var(--maroon-900);
+  --color-maroon-800: var(--maroon-800);
+  --color-maroon-700: var(--maroon-700);
+
+  --color-gold-200: var(--gold-200);
+  --color-gold-500: var(--gold-500);
+  --color-gold-700: var(--gold-700);
+  --color-gold-900: var(--gold-900);
+
+  --color-ivory: var(--ivory);
+
+  --font-display: var(--font-cinzel), "Times New Roman", serif;
+  --font-serif: var(--font-garamond), Georgia, serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--maroon-950);
+  }
+
+  body {
+    font-family: var(--font-serif);
+    color: var(--ivory);
+  }
+
+  /* Film grain over the whole page so the flat maroon reads like cloth. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection {
+    background: var(--gold-500);
+    color: var(--maroon-950);
+  }
+}
+
+@utility text-gilded {
+  background-image: linear-gradient(
+    180deg,
+    var(--gold-200) 10%,
+    var(--gold-500) 55%,
+    var(--gold-700) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
