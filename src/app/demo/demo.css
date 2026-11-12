@@ -1,0 +1,144 @@
+html:has(.book) {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* A wide perspective keeps the turning page from ballooning towards the
+   viewer; scaling it with the viewport keeps phone and desktop alike. */
+.book {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  perspective: 300vw;
+  touch-action: pan-y;
+  background: var(--maroon-950);
+}
+
+.leaf {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+}
+
+.leaf[data-active],
+.leaf[data-role] {
+  visibility: visible;
+}
+
+.leaf[data-role="under"] {
+  z-index: 1;
+}
+
+.leaf[data-role="over"] {
+  z-index: 2;
+}
+
+.leaf-front,
+.leaf-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.leaf-front {
+  background: var(--maroon-950);
+}
+
+/* Vertical swipes scroll long pages; horizontal ones are left to turn them. */
+.leaf-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+/* The reverse of each page: plain silk with a woven border. */
+.leaf-back {
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(
+      ellipse at 30% 20%,
+      rgb(255 220 160 / 0.1),
+      transparent 60%
+    ),
+    repeating-linear-gradient(
+      115deg,
+      rgb(255 255 255 / 0.03) 0 2px,
+      transparent 2px 7px
+    ),
+    var(--maroon-800);
+}
+
+[data-overlay] {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+[data-overlay="shade"],
+[data-overlay="back-shade"] {
+  background: #0c0203;
+}
+
+[data-overlay="sheen"] {
+  background: linear-gradient(
+    100deg,
+    transparent calc(var(--sheen, 0%) - 22%),
+    rgb(255 232 180 / 0.3) var(--sheen, 0%),
+    transparent calc(var(--sheen, 0%) + 22%)
+  );
+}
+
+[data-overlay="shadow"] {
+  background: linear-gradient(
+    to right,
+    rgb(0 0 0 / 0.8),
+    transparent var(--reach, 100%)
+  );
+}
+
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.fx-fill {
+  position: absolute;
+  inset: 0;
+}
+
+.demo-lamp {
+  isolation: isolate;
+}
+
+.demo-lamp::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 30%;
+  left: 50%;
+  width: min(150vmin, 900px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 196 100 / 0.35),
+    rgb(201 162 77 / 0.12) 45%,
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 1.4s ease 0.3s;
+  pointer-events: none;
+}
+
+.demo-lamp:disabled::before {
+  opacity: 1;
+}
