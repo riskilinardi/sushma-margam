@@ -9,7 +9,10 @@ import { FireRing } from "./FireRing";
 // the portrait takes whatever height is left. From lg up it sits side by side.
 export function Hero() {
   return (
-    <section className="relative isolate flex h-svh min-h-[34rem] overflow-hidden px-6 py-8 sm:px-12 lg:h-auto lg:min-h-svh lg:items-center lg:py-24">
+    <section
+      id="top"
+      className="relative isolate flex h-svh min-h-[34rem] snap-start overflow-hidden px-6 py-8 sm:px-12 lg:h-auto lg:min-h-svh lg:items-center lg:py-24"
+    >
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_40%,var(--maroon-800),var(--maroon-950)_70%)] lg:bg-[radial-gradient(ellipse_at_30%_50%,var(--maroon-800),var(--maroon-950)_65%)]"

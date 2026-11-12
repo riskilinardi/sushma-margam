@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Cinzel, EB_Garamond } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { event } from "@/content/event";
+import { formatDate, formatTime } from "@/lib/date";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const cinzel = Cinzel({
@@ -15,9 +17,14 @@ const garamond = EB_Garamond({
   variable: "--font-garamond",
 });
 
+const title = `${event.title} · ${event.dancer}`;
+const description = `A Bharatanatyam Margam by ${event.dancer}. ${formatDate(event.startsAt)}, ${formatTime(event.startsAt)} at ${event.venue.host}, Singapore.`;
+
 export const metadata: Metadata = {
-  title: `${event.title} · ${event.dancer}`,
-  description: `A Bharatanatyam Margam by ${event.dancer}, presented by ${event.presentedBy}, Singapore.`,
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  openGraph: { title, description, type: "website" },
 };
 
 export const viewport: Viewport = {
