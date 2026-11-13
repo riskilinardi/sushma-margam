@@ -10,6 +10,7 @@ export function GalleryPage() {
         {gallery.map((photo) => (
           <Placeholder
             key={photo.alt}
+            data-settle
             label={photo.alt}
             className="aspect-3/4"
           />

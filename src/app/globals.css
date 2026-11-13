@@ -12,6 +12,13 @@
   --gold-900: #4f3812;
 
   --ivory: #f4ead8;
+
+  --gilded: linear-gradient(
+    180deg,
+    var(--gold-200) 10%,
+    var(--gold-500) 55%,
+    var(--gold-700) 100%
+  );
 }
 
 @theme inline {
@@ -35,13 +42,6 @@
   html {
     color-scheme: dark;
     background: var(--maroon-950);
-    scroll-snap-type: y proximity;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
   }
 
   body {
@@ -74,12 +74,7 @@
 }
 
 @utility text-gilded {
-  background-image: linear-gradient(
-    180deg,
-    var(--gold-200) 10%,
-    var(--gold-500) 55%,
-    var(--gold-700) 100%
-  );
+  background-image: var(--gilded);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

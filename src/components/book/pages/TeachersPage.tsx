@@ -7,7 +7,7 @@ export function TeachersPage() {
     <div className="mx-auto max-w-md text-center">
       <PageHeading eyebrow="Guru Parampara" title="Her Teachers" />
 
-      <figure className="mt-6">
+      <figure data-settle className="mt-6">
         <Placeholder
           label="Photo"
           className="mx-auto aspect-square h-[20cqh] rounded-full"
@@ -18,10 +18,12 @@ export function TeachersPage() {
         </figcaption>
       </figure>
 
-      <p className={`mt-7 ${labelClass}`}>In gratitude to former teachers</p>
+      <p data-settle className={`mt-7 ${labelClass}`}>
+        In gratitude to former teachers
+      </p>
       <ul className="mt-4 grid grid-cols-2 gap-4">
         {event.formerTeachers.map((name) => (
-          <li key={name}>
+          <li key={name} data-settle>
             <Placeholder
               label="Photo"
               className="mx-auto aspect-square h-[13cqh] rounded-full"

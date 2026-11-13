@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type Ref } from "react";
-import { Lamp } from "@/components/intro/Lamp";
+import { Lamp } from "@/components/ui/Lamp";
 import { event } from "@/content/event";
 import type { Point } from "./fx/shared";
 
@@ -27,7 +27,7 @@ export function LampIntro({ ref, lit, onLight }: LampIntroProps) {
       ref={ref}
       className="fixed inset-x-0 top-0 z-50 flex h-lvh flex-col items-center justify-center gap-6 bg-[radial-gradient(circle_at_50%_44%,var(--maroon-900),var(--maroon-950)_70%)] px-6"
     >
-      <p className="font-display text-xs tracking-[0.3em] text-ivory/50 uppercase">
+      <p className="font-display text-xs tracking-[0.3em] text-ivory/70 uppercase">
         {event.dancer} · {event.title}
       </p>
       <button
@@ -39,7 +39,7 @@ export function LampIntro({ ref, lit, onLight }: LampIntroProps) {
       >
         <Lamp lit={lit} className="h-[min(44svh,340px)]" />
         <span
-          className={`font-display text-sm tracking-[0.3em] text-gold-500 uppercase transition-opacity duration-500 ${lit ? "opacity-0" : "intro-hint"}`}
+          className={`font-display text-sm tracking-[0.3em] text-gold-200 uppercase transition-opacity duration-500 ${lit ? "opacity-0" : "lamp-hint"}`}
         >
           Light the lamp
         </span>

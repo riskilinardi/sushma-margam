@@ -10,7 +10,7 @@ export function EveningPage() {
       <PageHeading eyebrow="You are invited" title="The Evening" />
 
       <dl className="mt-6 space-y-5">
-        <div>
+        <div data-settle>
           <dt className={labelClass}>When</dt>
           <dd className="mt-2 font-display text-base tracking-wide text-gold-200 uppercase">
             {formatDate(event.startsAt)}
@@ -23,7 +23,7 @@ export function EveningPage() {
             </span>
           </dd>
         </div>
-        <div>
+        <div data-settle>
           <dt className={labelClass}>Where</dt>
           <dd className="mt-2 text-xl">
             {event.venue.name}, {event.venue.host}
@@ -38,7 +38,7 @@ export function EveningPage() {
         </div>
       </dl>
 
-      <div className="mt-7 flex flex-wrap justify-center gap-2.5">
+      <div data-settle className="mt-7 flex flex-wrap justify-center gap-2.5">
         <ButtonLink href="/margam.ics" className="px-4">
           Calendar
         </ButtonLink>

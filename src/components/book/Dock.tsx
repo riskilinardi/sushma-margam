@@ -30,7 +30,7 @@ export function Dock({
         className="absolute inset-x-0 top-1.5 h-2.5 zari-band text-gold-500/35"
       />
 
-      <p className="flex items-center gap-2 text-sm text-ivory/45 italic">
+      <p className="flex items-center gap-2 text-sm text-ivory/70 italic">
         <svg
           viewBox="0 0 16 16"
           aria-hidden="true"
@@ -92,7 +92,7 @@ export function Dock({
           <path d="M6 3l5 5-5 5" />
         </RoundButton>
 
-        <p className="w-10 text-center font-display text-[0.65rem] text-ivory/50">
+        <p className="w-10 text-center font-display text-[0.65rem] text-ivory/70">
           {current + 1}/{pages.length}
         </p>
       </div>

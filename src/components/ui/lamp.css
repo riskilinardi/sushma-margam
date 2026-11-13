@@ -1,0 +1,42 @@
+.lamp-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  opacity: 0;
+  scale: 0.2;
+  transition:
+    opacity 0.5s ease,
+    scale 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+
+[data-lit] .lamp-flame {
+  opacity: 1;
+  scale: 1;
+}
+
+.lamp-flicker {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: lamp-flicker 1.8s ease-in-out infinite;
+}
+
+@keyframes lamp-flicker {
+  0%,
+  100% {
+    transform: scale(1, 1) skewX(0deg);
+  }
+  25% {
+    transform: scale(0.95, 1.06) skewX(1.5deg);
+  }
+  50% {
+    transform: scale(1.03, 0.96) skewX(-1deg);
+  }
+  75% {
+    transform: scale(0.98, 1.03) skewX(0.8deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lamp-flicker {
+    animation: none;
+  }
+}

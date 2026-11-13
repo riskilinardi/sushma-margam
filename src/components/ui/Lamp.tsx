@@ -1,4 +1,5 @@
 import { useId } from "react";
+import "./lamp.css";
 
 const FLAME = "M0 0C7-3 8-13 0-28C-8-13-7-3 0 0Z";
 const FLAME_CORE = "M0 0C3-2 4-7 0-14C-4-7-3-2 0 0Z";

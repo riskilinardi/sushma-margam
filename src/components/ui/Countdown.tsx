@@ -71,7 +71,7 @@ export function Countdown({ to, className = "" }: CountdownProps) {
           <span className="block text-gilded font-display text-3xl sm:text-4xl lg:text-5xl">
             {value === undefined ? "–" : String(value).padStart(2, "0")}
           </span>
-          <span className="mt-2 block font-display text-[0.65rem] tracking-[0.3em] text-ivory/60 uppercase">
+          <span className="mt-2 block font-display text-[0.65rem] tracking-[0.3em] text-ivory/75 uppercase">
             {value === 1 ? word : `${word}s`}
           </span>
         </div>

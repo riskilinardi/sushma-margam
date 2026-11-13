@@ -5,7 +5,6 @@ import { siteUrl } from "@/lib/site";
 const address = event.venue.address.join(", ");
 
 export const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-export const appleMapsUrl = `https://maps.apple.com/?q=${encodeURIComponent(address)}`;
 
 const shareText = [
   `${event.title} · ${event.dancer}`,

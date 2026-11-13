@@ -18,11 +18,11 @@ import { ring } from "./fx/ring";
 import { clamp, play, resetLeaf, type Point, type Reveal } from "./fx/shared";
 import { silkTurn, type SilkTurn } from "./fx/silk";
 import { LampIntro } from "./LampIntro";
-import "@/components/intro/intro.css";
+import { holdBack, release, settleIn } from "./settle";
+import { playLampLighting, setMuted } from "./sound";
 import "./book.css";
 
 export type Effect = "silk" | "flame" | "fan" | "ring" | "her" | "fade";
-export type Mode = "mix" | Exclude<Effect, "fade">;
 export type BookPage = { name: string; content: ReactNode };
 
 const fade: Reveal = ({ incoming }) =>
@@ -38,27 +38,21 @@ const reveals: Record<Exclude<Effect, "silk">, Reveal> = {
   fade,
 };
 
-const modes: { value: Mode; label: string }[] = [
-  { value: "mix", label: "Mix (suggested)" },
-  { value: "silk", label: "Silk page" },
-  { value: "flame", label: "Living flame" },
-  { value: "fan", label: "The fan opens" },
-  { value: "ring", label: "Ring of fire" },
-  { value: "her", label: "Her silhouette" },
-];
-
 // How far a finger travels for a full turn, as a share of the page width.
 const TURN_DISTANCE = 0.8;
 
+// How long the wicks take to catch before their light opens the book.
+const LAMP_CATCHES = 1400;
+
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const reducedMotion = () =>
+  matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 type BookProps = {
   pages: BookPage[];
   // Special transitions between named pages, e.g. "Wishes>Lyrics": "fan".
   // Every other turn is a silk page.
   moments?: Record<string, Effect>;
-  // Shows a picker for trying each transition everywhere.
-  picker?: boolean;
 };
 
 type Gesture = {
@@ -73,11 +67,10 @@ type Gesture = {
   turn?: SilkTurn;
 };
 
-export function Book({ pages, moments = {}, picker = false }: BookProps) {
+export function Book({ pages, moments = {} }: BookProps) {
   const [opened, setOpened] = useState(false);
   const [lit, setLit] = useState(false);
   const [index, setIndex] = useState(0);
-  const [mode, setMode] = useState<Mode>("mix");
   const [sound, setSound] = useState(true);
 
   const book = useRef<HTMLDivElement>(null);
@@ -91,8 +84,7 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
   const gesture = useRef<Gesture | null>(null);
 
   function effectFor(from: number, to: number): Effect {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return "fade";
-    if (picker && mode !== "mix") return mode;
+    if (reducedMotion()) return "fade";
     return moments[`${pages[from].name}>${pages[to].name}`] ?? "silk";
   }
 
@@ -106,6 +98,7 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
     flushSync(() => setIndex(to));
     current.current = to;
     involved.forEach(resetLeaf);
+    settleIn(leaves.current[to]);
     busy.current = false;
   }
 
@@ -116,6 +109,7 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
       : [leaves.current[to], leaves.current[from]];
     turning.dataset.role = "over";
     under.dataset.role = "under";
+    holdBack(leaves.current[to]);
     return silkTurn(turning, under, forward);
   }
 
@@ -133,6 +127,7 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
     } else {
       incoming.dataset.role = "over";
       outgoing.dataset.role = "under";
+      if (effect !== "fade") holdBack(incoming);
       await reveals[effect]({
         incoming,
         outgoing,
@@ -144,9 +139,14 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
   }
 
   // Lighting the lamp: the flames catch, then their light opens the book.
+  // This runs inside the tap, which is what allows the sound to start.
   async function light(flames: Point) {
     setLit(true);
-    await wait(1400);
+    if (sound) playLampLighting(LAMP_CATCHES / 1000);
+    const cover = leaves.current[0];
+    if (!reducedMotion()) holdBack(cover);
+
+    await wait(LAMP_CATCHES);
     const pagesAndDock = book.current!;
     pagesAndDock.style.zIndex = "51";
     await flame({
@@ -155,8 +155,16 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
       layer: screenLayer.current!,
       origin: flames,
     });
-    setOpened(true);
+    // Remove the lamp before the book drops back to its normal layer, or
+    // the lamp shows through for a frame.
+    flushSync(() => setOpened(true));
     pagesAndDock.removeAttribute("style");
+    settleIn(cover);
+  }
+
+  function toggleSound() {
+    setMuted(sound);
+    setSound(!sound);
   }
 
   function onPointerDown(event: PointerEvent) {
@@ -229,6 +237,7 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
       } else {
         await g.turn.cancel(speed);
         involved.forEach(resetLeaf);
+        release(leaves.current[g.target]);
         busy.current = false;
       }
     } else if (released && Math.abs(event.clientX - g.startX) > 50) {
@@ -287,23 +296,6 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
           ))}
 
           <div ref={pageLayer} className="fx-layer" />
-
-          {picker && (
-            <label className="absolute top-1 right-3 z-40">
-              <span className="sr-only">Page transition</span>
-              <select
-                value={mode}
-                onChange={(event) => setMode(event.target.value as Mode)}
-                className="rounded-full border border-gold-500/40 bg-maroon-950 py-1 pr-1.5 pl-2.5 font-display text-[0.55rem] tracking-[0.12em] text-gold-200 uppercase"
-              >
-                {modes.map(({ value, label }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
         </div>
 
         <Dock
@@ -311,7 +303,7 @@ export function Book({ pages, moments = {}, picker = false }: BookProps) {
           current={index}
           sound={sound}
           onGo={go}
-          onToggleSound={() => setSound((on) => !on)}
+          onToggleSound={toggleSound}
         />
       </div>
 
@@ -328,6 +320,31 @@ function PageFrame() {
       className="pointer-events-none absolute inset-3 border border-gold-500/30 lg:inset-5"
     >
       <div className="absolute inset-1.5 border border-gold-500/15" />
+      <FrameCorner className="-top-1.5 -left-1.5" />
+      <FrameCorner className="-top-1.5 -right-1.5 -scale-x-100" />
+      <FrameCorner className="-bottom-1.5 -left-1.5 -scale-y-100" />
+      <FrameCorner className="-right-1.5 -bottom-1.5 -scale-100" />
     </div>
+  );
+}
+
+// A diamond on the corner with a small scroll curling along each edge,
+// drawn for the top-left corner and mirrored for the others.
+function FrameCorner({ className }: { className: string }) {
+  return (
+    <svg
+      viewBox="0 0 36 36"
+      className={`absolute size-9 text-gold-500 lg:size-12 ${className}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.1"
+      strokeLinecap="round"
+    >
+      <path d="M6 1 11 6 6 11 1 6Z" fill="currentColor" stroke="none" />
+      <path d="M13 6C19 6 23 8 23 12 23 15 20 16 18.5 14.5 17 13 18 11 20 11.5" />
+      <path d="M6 13C6 19 8 23 12 23 15 23 16 20 14.5 18.5 13 17 11 18 11.5 20" />
+      <circle cx="29" cy="6" r="1.1" fill="currentColor" stroke="none" />
+      <circle cx="6" cy="29" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
   );
 }

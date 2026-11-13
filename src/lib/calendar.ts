@@ -8,7 +8,7 @@ const location = [
 ].join(", ");
 const details = `A Bharatanatyam Margam by ${event.dancer}. Please be seated by ${event.arriveBy}.`;
 
-// Both calendar formats want UTC written as 20261205T113000Z.
+// iCalendar wants UTC written as 20261205T113000Z.
 function utcStamp(date: Date) {
   return date
     .toISOString()
@@ -24,17 +24,6 @@ function escapeText(value: string) {
 // on the next line after a single space.
 function fold(line: string) {
   return line.match(/.{1,73}/g)!.join("\r\n ");
-}
-
-export function googleCalendarUrl() {
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: title,
-    dates: `${utcStamp(event.startsAt)}/${utcStamp(event.endsAt)}`,
-    details,
-    location,
-  });
-  return `https://calendar.google.com/calendar/render?${params}`;
 }
 
 export function icsFile() {
