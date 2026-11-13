@@ -12,9 +12,11 @@ import { WishesPage } from "@/components/book/pages/WishesPage";
 export default function Home() {
   return (
     <Book
-      // "her" (Sushma's silhouette) replaces the ring once there is a
-      // standing-pose photo to trace.
-      moments={{ "Cover>The Evening": "ring", "Wishes>Lyrics": "fan" }}
+      moments={{
+        "Cover>The Evening": "ring",
+        "The Evening>Her Story": "her",
+        "Wishes>Lyrics": "fan",
+      }}
       pages={[
         { name: "Cover", content: <CoverPage /> },
         { name: "The Evening", content: <EveningPage /> },
