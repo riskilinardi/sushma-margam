@@ -3,15 +3,29 @@ html:has(.book) {
   overscroll-behavior: none;
 }
 
-/* A wide perspective keeps the turning page from ballooning towards the
-   viewer; scaling it with the viewport keeps phone and desktop alike. */
+/* Pages take the top four fifths of the screen; the dock takes the rest. */
 .book {
   position: fixed;
   inset: 0;
+  display: grid;
+  grid-template-rows: 1fr minmax(7rem, 20%);
+  background: var(--maroon-950);
+}
+
+@media (width >= 64rem) {
+  .book {
+    grid-template-rows: 1fr 7.5rem;
+  }
+}
+
+/* A wide perspective keeps the turning page from ballooning towards the
+   viewer; scaling it with the viewport keeps phone and desktop alike.
+   Pages never scroll, so every drag is handed to the page turner. */
+.book-pages {
+  position: relative;
   overflow: hidden;
   perspective: 300vw;
-  touch-action: pan-y;
-  background: var(--maroon-950);
+  touch-action: pinch-zoom;
 }
 
 .leaf {
@@ -44,19 +58,14 @@ html:has(.book) {
 }
 
 .leaf-front {
-  background: var(--maroon-950);
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    var(--maroon-800),
+    var(--maroon-950) 75%
+  );
 }
 
-/* Vertical swipes scroll long pages; horizontal ones are left to turn them. */
-.leaf-scroll {
-  position: absolute;
-  inset: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-}
-
-/* The reverse of each page: plain silk with a woven border. */
+/* The reverse of each page: plain silk inside the same gold frame. */
 .leaf-back {
   transform: rotateY(180deg);
   background:
@@ -103,10 +112,15 @@ html:has(.book) {
 }
 
 .fx-layer {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 30;
   pointer-events: none;
+}
+
+.fx-screen {
+  position: fixed;
+  z-index: 52;
 }
 
 .fx-fill {
@@ -114,11 +128,11 @@ html:has(.book) {
   inset: 0;
 }
 
-.demo-lamp {
+.lamp-glow {
   isolation: isolate;
 }
 
-.demo-lamp::before {
+.lamp-glow::before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -139,6 +153,6 @@ html:has(.book) {
   pointer-events: none;
 }
 
-.demo-lamp:disabled::before {
+.lamp-glow:disabled::before {
   opacity: 1;
 }

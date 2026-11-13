@@ -1,18 +1,6 @@
 import { buttonClass } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
-
-// Shown until the guestbook is connected to a database.
-const sampleWishes = [
-  {
-    name: "A friend",
-    message: "Wishes from guests will appear here once the guestbook opens.",
-  },
-  {
-    name: "Family",
-    message: "So proud of you, Sushma! Can't wait to watch you on stage.",
-  },
-  { name: "Classmate", message: "All the best for your Margam!" },
-];
+import { sampleWishes } from "@/content/wishes";
 
 const fieldClass =
   "mt-2 block w-full rounded-sm border border-gold-500/30 bg-maroon-900/70 px-4 py-3 text-base text-ivory placeholder:text-ivory/35 focus:border-gold-200 focus:outline-none";

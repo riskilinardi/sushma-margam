@@ -55,12 +55,15 @@ export function svg<Tag extends keyof SVGElementTagNameMap>(
   return element;
 }
 
-export function screenSvg(layer: HTMLElement) {
-  return svg(
-    "svg",
-    { width: innerWidth, height: innerHeight, class: "fx-fill" },
-    layer,
-  );
+// Effects are drawn in the coordinates of the element being revealed: the
+// page area for page turns, the whole screen for the opening.
+export function sizeOf(element: HTMLElement) {
+  return { width: element.offsetWidth, height: element.offsetHeight };
+}
+
+export function layerSvg(layer: HTMLElement) {
+  const { width, height } = sizeOf(layer);
+  return svg("svg", { width, height, class: "fx-fill" }, layer);
 }
 
 export function resetLeaf(leaf: HTMLElement) {

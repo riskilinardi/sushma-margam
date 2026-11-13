@@ -3,6 +3,7 @@ import {
   easeInOut,
   play,
   setMask,
+  sizeOf,
   type Point,
   type RevealContext,
 } from "./shared";
@@ -12,10 +13,11 @@ const TONGUES = 12;
 // Lamp light spreading from the touch point. The edge is a ring of
 // flickering lobes rather than a clean circle, with embers thrown off it.
 export async function flame({ incoming, layer, origin }: RevealContext) {
+  const { width, height } = sizeOf(incoming);
   const reach =
     Math.hypot(
-      Math.max(origin.x, innerWidth - origin.x),
-      Math.max(origin.y, innerHeight - origin.y),
+      Math.max(origin.x, width - origin.x),
+      Math.max(origin.y, height - origin.y),
     ) * 1.25;
 
   const tongues = Array.from({ length: TONGUES }, (_, i) => {
@@ -74,14 +76,16 @@ type Spark = {
 class Embers {
   private readonly canvas = document.createElement("canvas");
   private readonly context = this.canvas.getContext("2d")!;
+  private readonly size: { width: number; height: number };
   private sparks: Spark[] = [];
   private last = performance.now();
   private retiring = false;
 
   constructor(layer: HTMLElement) {
     const ratio = Math.min(devicePixelRatio, 2);
-    this.canvas.width = innerWidth * ratio;
-    this.canvas.height = innerHeight * ratio;
+    this.size = sizeOf(layer);
+    this.canvas.width = this.size.width * ratio;
+    this.canvas.height = this.size.height * ratio;
     this.canvas.className = "fx-fill";
     this.context.scale(ratio, ratio);
     layer.append(this.canvas);
@@ -118,7 +122,7 @@ class Embers {
     this.last = now;
     const { context } = this;
 
-    context.clearRect(0, 0, innerWidth, innerHeight);
+    context.clearRect(0, 0, this.size.width, this.size.height);
     context.globalCompositeOperation = "lighter";
     this.sparks = this.sparks.filter((spark) => (spark.age += dt) < spark.life);
 

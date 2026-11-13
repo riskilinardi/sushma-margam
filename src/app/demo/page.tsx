@@ -1,27 +1,35 @@
 import type { Metadata } from "next";
-import { Gratitude } from "@/components/gratitude/Gratitude";
-import { Hero } from "@/components/hero/Hero";
-import { Invitation } from "@/components/invitation/Invitation";
-import { Lyrics } from "@/components/lyrics/Lyrics";
-import { Programme } from "@/components/programme/Programme";
-import { Wishes } from "@/components/wishes/Wishes";
-import { TransitionsDemo } from "./TransitionsDemo";
+import { Book } from "@/components/book/Book";
+import { CoverPage } from "@/components/book/pages/CoverPage";
+import { EveningPage } from "@/components/book/pages/EveningPage";
+import { GalleryPage } from "@/components/book/pages/GalleryPage";
+import { LyricsPage } from "@/components/book/pages/LyricsPage";
+import { ProgrammePage } from "@/components/book/pages/ProgrammePage";
+import { StoryPage } from "@/components/book/pages/StoryPage";
+import { TeachersPage } from "@/components/book/pages/TeachersPage";
+import { ThanksPage } from "@/components/book/pages/ThanksPage";
+import { WishesPage } from "@/components/book/pages/WishesPage";
 
 export const metadata: Metadata = {
-  title: "Page transitions · demo",
+  title: "Storybook · demo",
   robots: { index: false },
 };
 
 export default function DemoPage() {
   return (
-    <TransitionsDemo
+    <Book
+      picker
+      moments={{ "Cover>The Evening": "her", "Wishes>Lyrics": "fan" }}
       pages={[
-        { name: "Cover", content: <Hero /> },
-        { name: "The Evening", content: <Invitation /> },
-        { name: "Programme", content: <Programme /> },
-        { name: "Wishes", content: <Wishes /> },
-        { name: "Lyrics", content: <Lyrics /> },
-        { name: "Thank You", content: <Gratitude /> },
+        { name: "Cover", content: <CoverPage /> },
+        { name: "The Evening", content: <EveningPage /> },
+        { name: "Her Story", content: <StoryPage /> },
+        { name: "Her Teachers", content: <TeachersPage /> },
+        { name: "Programme", content: <ProgrammePage /> },
+        { name: "Gallery", content: <GalleryPage /> },
+        { name: "Wishes", content: <WishesPage /> },
+        { name: "Lyrics", content: <LyricsPage /> },
+        { name: "Thank You", content: <ThanksPage /> },
       ]}
     />
   );

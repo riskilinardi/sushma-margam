@@ -4,8 +4,9 @@ import {
   easeIn,
   easeInOut,
   easeOut,
+  layerSvg,
   play,
-  screenSvg,
+  sizeOf,
   svg,
   type RevealContext,
 } from "./shared";
@@ -14,21 +15,22 @@ import {
 // camera flies into her until the page covers the screen.
 export async function her({ incoming, outgoing, layer }: RevealContext) {
   const { width, height, focal, focalRadius, path } = silhouette;
+  const area = sizeOf(incoming);
   const base = Math.min(
-    (innerWidth * 0.84) / width,
-    (innerHeight * 0.6) / height,
+    (area.width * 0.84) / width,
+    (area.height * 0.6) / height,
   );
-  // Where the focal point sits on screen, with the outline centred.
-  const fx = (innerWidth - width * base) / 2 + focal.x * width * base;
-  const fy = (innerHeight - height * base) / 2 + focal.y * height * base;
+  // Where the focal point sits on the page, with the outline centred.
+  const fx = (area.width - width * base) / 2 + focal.x * width * base;
+  const fy = (area.height - height * base) / 2 + focal.y * height * base;
   const reach = Math.hypot(
-    Math.max(fx, innerWidth - fx),
-    Math.max(fy, innerHeight - fy),
+    Math.max(fx, area.width - fx),
+    Math.max(fy, area.height - fy),
   );
   const endScale = (reach / (focalRadius * height)) * 1.2;
 
   const dim = outgoing.querySelector<HTMLElement>('[data-overlay="shade"]')!;
-  const canvas = screenSvg(layer);
+  const canvas = layerSvg(layer);
   const group = svg("g", {}, canvas);
   const outline = (opacity: number) =>
     svg(

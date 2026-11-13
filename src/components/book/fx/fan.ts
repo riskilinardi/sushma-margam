@@ -2,10 +2,11 @@ import {
   clamp,
   easeIn,
   easeOut,
+  layerSvg,
   lerp,
   play,
-  screenSvg,
   setMask,
+  sizeOf,
   svg,
   type Point,
   type RevealContext,
@@ -16,14 +17,15 @@ const PLEAT_ANGLE = 180 / PLEATS;
 
 // The pleated fan at the front of a Bharatanatyam costume, which opens when
 // the dancer sinks into araimandi. The new page shows through the pleats,
-// each edged in gold, then the fan blooms outward to fill the screen.
+// each edged in gold, then the fan blooms outward to fill the page.
 export async function fan({ incoming, layer }: RevealContext) {
-  const pivot = { x: innerWidth / 2, y: innerHeight };
-  // Sized so the whole open fan fits the screen before it blooms.
-  const radius = Math.min(innerWidth * 0.48, innerHeight * 0.8);
-  const reach = Math.hypot(innerWidth / 2, innerHeight) * 1.05;
+  const { width, height } = sizeOf(incoming);
+  const pivot = { x: width / 2, y: height };
+  // Sized so the whole open fan fits the page before it blooms.
+  const radius = Math.min(width * 0.48, height * 0.8);
+  const reach = Math.hypot(width / 2, height) * 1.05;
 
-  const canvas = screenSvg(layer);
+  const canvas = layerSvg(layer);
   const gradient = svg(
     "linearGradient",
     { id: "fx-pleat", x1: 0, x2: 1 },

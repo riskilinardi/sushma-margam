@@ -4,18 +4,10 @@ import { Section } from "@/components/ui/Section";
 import { event } from "@/content/event";
 import { googleCalendarUrl } from "@/lib/calendar";
 import { formatDate, formatTime } from "@/lib/date";
-import { siteUrl } from "@/lib/site";
+import { appleMapsUrl, googleMapsUrl, whatsappShareUrl } from "@/lib/links";
 
-const address = event.venue.address.join(", ");
 const date = formatDate(event.startsAt);
 const time = formatTime(event.startsAt);
-
-const shareText = [
-  `${event.title} · ${event.dancer}`,
-  `${date}, ${time}`,
-  `${event.venue.name}, ${event.venue.host}`,
-  siteUrl,
-].join("\n");
 
 export function Invitation() {
   return (
@@ -52,18 +44,10 @@ export function Invitation() {
             ))}
           </address>
           <Actions>
-            <ButtonLink
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <ButtonLink href={googleMapsUrl} target="_blank" rel="noreferrer">
               Google Maps
             </ButtonLink>
-            <ButtonLink
-              href={`https://maps.apple.com/?q=${encodeURIComponent(address)}`}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <ButtonLink href={appleMapsUrl} target="_blank" rel="noreferrer">
               Apple Maps
             </ButtonLink>
           </Actions>
@@ -73,7 +57,7 @@ export function Invitation() {
       <div className="mt-10 flex justify-center">
         <ButtonLink
           variant="solid"
-          href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
+          href={whatsappShareUrl}
           target="_blank"
           rel="noreferrer"
         >

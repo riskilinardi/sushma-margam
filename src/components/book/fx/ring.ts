@@ -4,6 +4,7 @@ import {
   easeOut,
   play,
   setMask,
+  sizeOf,
   svg,
   type RevealContext,
 } from "./shared";
@@ -17,15 +18,24 @@ const INNER = 75 / 200;
 // The ring of fire becomes a portal: the next page opens inside it, then the
 // ring rushes past the viewer.
 export async function ring({ incoming, outgoing, layer }: RevealContext) {
-  const existing = outgoing.querySelector('svg[viewBox="-100 -100 200 200"]');
-  const size = Math.min(innerWidth, innerHeight) * 0.7;
-  const box =
-    existing?.getBoundingClientRect() ??
-    new DOMRect((innerWidth - size) / 2, (innerHeight - size) / 2, size, size);
+  const { width, height } = sizeOf(incoming);
+  const page = incoming.getBoundingClientRect();
+  const existing = outgoing
+    .querySelector('svg[viewBox="-100 -100 200 200"]')
+    ?.getBoundingClientRect();
+  const size = Math.min(width, height) * 0.7;
+  const box = existing
+    ? new DOMRect(
+        existing.left - page.left,
+        existing.top - page.top,
+        existing.width,
+        existing.height,
+      )
+    : new DOMRect((width - size) / 2, (height - size) / 2, size, size);
   const centre = { x: box.left + box.width / 2, y: box.top + box.height / 2 };
   const reach = Math.hypot(
-    Math.max(centre.x, innerWidth - centre.x),
-    Math.max(centre.y, innerHeight - centre.y),
+    Math.max(centre.x, width - centre.x),
+    Math.max(centre.y, height - centre.y),
   );
   const endScale = (reach / (box.width * INNER)) * 1.3;
 
