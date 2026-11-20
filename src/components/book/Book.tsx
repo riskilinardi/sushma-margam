@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  createContext,
+  use,
   useEffect,
   useRef,
   useState,
@@ -10,7 +12,7 @@ import {
 import { flushSync } from "react-dom";
 import { Ornament } from "@/components/ui/Ornament";
 import { Dock } from "./Dock";
-import { Fit } from "./Fit";
+import { Fit, pageBox } from "./Fit";
 import { fan } from "./fx/fan";
 import { flame } from "./fx/flame";
 import { her } from "./fx/her";
@@ -23,7 +25,34 @@ import { playLampLighting, setMuted } from "./sound";
 import "./book.css";
 
 export type Effect = "silk" | "flame" | "fan" | "ring" | "her" | "fade";
-export type BookPage = { name: string; content: ReactNode };
+
+export type BookPage = {
+  name: string;
+  content: ReactNode;
+  // Fills the page as laid out, instead of being shrunk to fit. For pages
+  // that scroll part of themselves, like the lyrics.
+  fill?: boolean;
+};
+
+type BookApi = {
+  goTo: (name: string) => void;
+  // Set after goTo, so the page arrived at can offer a way back.
+  back: { name: string; go: () => void } | null;
+};
+
+const BookContext = createContext<BookApi | null>(null);
+
+export function useBook() {
+  return use(BookContext)!;
+}
+
+const NearbyContext = createContext(false);
+
+// True while the reader is on this page or next to it, so pages can load
+// their data just before they're reached and stop listening once left.
+export function useIsNearby() {
+  return use(NearbyContext);
+}
 
 const fade: Reveal = ({ incoming }) =>
   play(0.3, (t) => {
@@ -50,8 +79,8 @@ const reducedMotion = () =>
 
 type BookProps = {
   pages: BookPage[];
-  // Special transitions between named pages, e.g. "Wishes>Lyrics": "fan".
-  // Every other turn is a silk page.
+  // Special transitions between named pages, e.g. "Wishes>Lyrics": "fan",
+  // or "*>Lyrics" for every way in. Every other turn is a silk page.
   moments?: Record<string, Effect>;
 };
 
@@ -72,6 +101,7 @@ export function Book({ pages, moments = {} }: BookProps) {
   const [lit, setLit] = useState(false);
   const [index, setIndex] = useState(0);
   const [sound, setSound] = useState(true);
+  const [jump, setJump] = useState<{ from: number; to: number } | null>(null);
 
   const book = useRef<HTMLDivElement>(null);
   const lamp = useRef<HTMLDivElement>(null);
@@ -85,7 +115,13 @@ export function Book({ pages, moments = {} }: BookProps) {
 
   function effectFor(from: number, to: number): Effect {
     if (reducedMotion()) return "fade";
-    return moments[`${pages[from].name}>${pages[to].name}`] ?? "silk";
+    const [a, b] = [pages[from].name, pages[to].name];
+    return moments[`${a}>${b}`] ?? moments[`*>${b}`] ?? "silk";
+  }
+
+  function pageCentre(): Point {
+    const area = pageArea.current!.getBoundingClientRect();
+    return { x: area.left + area.width / 2, y: area.top + area.height / 2 };
   }
 
   // Screen coordinates to the page area's own.
@@ -95,7 +131,11 @@ export function Book({ pages, moments = {} }: BookProps) {
   }
 
   function settle(to: number, involved: HTMLElement[]) {
-    flushSync(() => setIndex(to));
+    flushSync(() => {
+      setIndex(to);
+      // A way back only lasts while you stay on the page you jumped to.
+      setJump((last) => (last?.to === to ? last : null));
+    });
     current.current = to;
     involved.forEach(resetLeaf);
     settleIn(leaves.current[to]);
@@ -166,6 +206,19 @@ export function Book({ pages, moments = {} }: BookProps) {
     setMuted(sound);
     setSound(!sound);
   }
+
+  const api: BookApi = {
+    goTo(name) {
+      const to = pages.findIndex((page) => page.name === name);
+      if (busy.current || to < 0) return;
+      setJump({ from: current.current, to });
+      go(to, pageCentre());
+    },
+    back: jump && {
+      name: pages[jump.from].name,
+      go: () => go(jump.from, pageCentre()),
+    },
+  };
 
   function onPointerDown(event: PointerEvent) {
     if (busy.current || !event.isPrimary) return;
@@ -257,7 +310,7 @@ export function Book({ pages, moments = {} }: BookProps) {
   });
 
   return (
-    <>
+    <BookContext value={api}>
       <div ref={book} inert={!opened} className="book">
         <div
           ref={pageArea}
@@ -282,7 +335,13 @@ export function Book({ pages, moments = {} }: BookProps) {
             >
               <div className="leaf-front">
                 <PageFrame />
-                <Fit>{page.content}</Fit>
+                <NearbyContext value={opened && Math.abs(i - index) <= 1}>
+                  {page.fill ? (
+                    <div className={pageBox}>{page.content}</div>
+                  ) : (
+                    <Fit>{page.content}</Fit>
+                  )}
+                </NearbyContext>
                 <div data-overlay="shadow" />
                 <div data-overlay="shade" />
                 <div data-overlay="sheen" />
@@ -309,7 +368,7 @@ export function Book({ pages, moments = {} }: BookProps) {
 
       <div ref={screenLayer} className="fx-layer fx-screen" />
       {!opened && <LampIntro ref={lamp} lit={lit} onLight={light} />}
-    </>
+    </BookContext>
   );
 }
 

@@ -2,9 +2,13 @@
 
 import { useLayoutEffect, useRef, type ReactNode } from "react";
 
+// The area inside a page's frame. It is a size container, so pages can size
+// images by the page's height in `cqh`.
+export const pageBox =
+  "[container-type:size] absolute inset-x-7 inset-y-8 lg:inset-x-16 lg:inset-y-12";
+
 // Pages never scroll. Content that is taller than its page is scaled down
 // until it fits; content that already fits is centred at full size.
-// The box is a size container, so pages can size images in `cqh`.
 export function Fit({ children }: { children: ReactNode }) {
   const box = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
@@ -28,10 +32,7 @@ export function Fit({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div
-      ref={box}
-      className="[container-type:size] absolute inset-x-7 inset-y-8 overflow-hidden lg:inset-x-16 lg:inset-y-12"
-    >
+    <div ref={box} className={`${pageBox} overflow-hidden`}>
       <div ref={content} className="origin-top">
         {children}
       </div>

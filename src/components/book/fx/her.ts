@@ -11,14 +11,14 @@ import {
   type RevealContext,
 } from "./shared";
 
-// Sushma's outline draws itself in gold, fills with the next page, then the
-// camera flies into her until the page covers the screen.
+// Sushma's outline draws itself in a fine gold line, fills with the next
+// page, then the camera flies into her until the page covers the screen.
 export async function her({ incoming, outgoing, layer }: RevealContext) {
   const { width, height, focal, focalRadius, path } = silhouette;
   const area = sizeOf(incoming);
   const base = Math.min(
-    (area.width * 0.84) / width,
-    (area.height * 0.6) / height,
+    (area.width * 0.7) / width,
+    (area.height * 0.55) / height,
   );
   // Where the focal point sits on the page, with the outline centred.
   const fx = (area.width - width * base) / 2 + focal.x * width * base;
@@ -47,13 +47,13 @@ export async function her({ incoming, outgoing, layer }: RevealContext) {
       group,
     );
   const strokes = [
-    { line: outline(0.25), width: 8 },
-    { line: outline(1), width: 1.6 },
+    { line: outline(0.18), width: 3 },
+    { line: outline(0.9), width: 1 },
   ];
 
-  await play(2.2, (t) => {
-    const draw = easeInOut(clamp(t / 0.4));
-    const fill = easeOut(clamp((t - 0.32) / 0.2));
+  await play(2, (t) => {
+    const draw = easeInOut(clamp(t / 0.38));
+    const fill = easeOut(clamp((t - 0.3) / 0.2));
     const zoom = easeIn(clamp((t - 0.5) / 0.5));
     const scale = base * (endScale / base) ** zoom;
     const x = fx - focal.x * width * scale;
@@ -64,7 +64,8 @@ export async function her({ incoming, outgoing, layer }: RevealContext) {
       line.setAttribute("stroke-dashoffset", String(1 - draw));
       line.setAttribute("stroke-width", String(width / scale));
     }
-    canvas.style.opacity = String(1 - zoom);
+    // Once the page fills her, the line steps back rather than sitting on top.
+    canvas.style.opacity = String((1 - fill * 0.6) * (1 - zoom));
     dim.style.opacity = String(0.6 * clamp(t / 0.3) * (1 - zoom));
 
     incoming.style.opacity = String(fill);

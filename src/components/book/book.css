@@ -20,7 +20,8 @@ html:has(.book) {
 
 /* A wide perspective keeps the turning page from ballooning towards the
    viewer; scaling it with the viewport keeps phone and desktop alike.
-   Pages never scroll, so every drag is handed to the page turner. */
+   Drags are handed to the page turner; only parts of a page that scroll
+   (the lyrics) take vertical swipes back. */
 .book-pages {
   position: relative;
   overflow: hidden;
@@ -32,7 +33,6 @@ html:has(.book) {
   position: absolute;
   inset: 0;
   visibility: hidden;
-  transform-style: preserve-3d;
   transform-origin: left center;
 }
 
@@ -53,8 +53,22 @@ html:has(.book) {
 .leaf-back {
   position: absolute;
   inset: 0;
+}
+
+/* The 3D set-up only exists while a page is turning. iOS Safari won't
+   scroll inside a preserve-3d page, and a resting page doesn't need it. */
+.leaf[data-role] {
+  transform-style: preserve-3d;
+}
+
+.leaf[data-role] .leaf-front,
+.leaf[data-role] .leaf-back {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+.leaf:not([data-role]) .leaf-back {
+  display: none;
 }
 
 .leaf-front {
@@ -191,6 +205,20 @@ html:has(.book) {
   .leaf[data-settle] .leaf-front * {
     animation: none !important;
   }
+}
+
+/* The parts of the book that scroll: lyrics, wishes and photos. Their edges
+   fade so content drifts in and out instead of being cut off. */
+.page-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  mask-image: linear-gradient(
+    transparent,
+    #000 1.25rem,
+    #000 calc(100% - 2rem),
+    transparent
+  );
 }
 
 .fx-layer {

@@ -23,6 +23,8 @@ export function Dock({
   onGo,
   onToggleSound,
 }: DockProps) {
+  const progress = (current / (pages.length - 1)) * 100;
+
   return (
     <footer className="relative flex flex-col items-center justify-center gap-3 border-t border-gold-500/30 bg-maroon-950 px-4 pb-[env(safe-area-inset-bottom)]">
       <div
@@ -69,19 +71,19 @@ export function Dock({
           >
             {pages[current]}
           </p>
-          <ol className="flex items-center gap-2">
-            {pages.map((name, page) => (
-              <li key={name} className="flex">
-                <button
-                  type="button"
-                  aria-label={name}
-                  aria-current={page === current ? "page" : undefined}
-                  onClick={(event) => onGo(page, centreOf(event))}
-                  className="size-2 rotate-45 border border-gold-500 transition-colors aria-[current=page]:bg-gold-500"
-                />
-              </li>
-            ))}
-          </ol>
+          {/* Too many pages for a dot each: a gold thread with a diamond
+              that travels along it as you read. */}
+          <div aria-hidden="true" className="relative h-2 w-full max-w-40">
+            <div className="absolute inset-x-0 top-1/2 h-px bg-gold-500/30" />
+            <div
+              className="absolute top-1/2 left-0 h-px bg-gold-500 transition-[width] duration-700"
+              style={{ width: `${progress}%` }}
+            />
+            <div
+              className="absolute top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gold-500 transition-[left] duration-700"
+              style={{ left: `${progress}%` }}
+            />
+          </div>
         </div>
 
         <RoundButton
