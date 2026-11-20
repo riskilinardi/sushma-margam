@@ -30,6 +30,14 @@ html:has(.book) {
   overflow: hidden;
   perspective: 300vw;
   touch-action: pinch-zoom;
+  /* Dragging is for turning pages, not selecting text. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.book-pages :is(input, textarea) {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 .leaf {
@@ -297,8 +305,75 @@ html:has(.book) {
   pointer-events: none;
 }
 
-.lamp-glow:disabled::before {
+[data-lit] .lamp-glow::before {
   opacity: 1;
+}
+
+/* Before it is lit, a faint stage light falls on the lamp from above. */
+.lamp-spot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 22% 62% at 50% 0%,
+    rgb(255 236 214 / 0.08),
+    transparent
+  );
+  transition: opacity 1.2s ease;
+}
+
+[data-lit] .lamp-spot {
+  opacity: 0;
+}
+
+/* On the way in from the lamp, the controls arrive after the cover. */
+.dock {
+  transition:
+    opacity 0.8s ease,
+    translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.book[data-arriving] .dock {
+  opacity: 0;
+  translate: 0 1.5rem;
+  transition: none;
+}
+
+/* Until the first page is turned, the cover's corner lifts now and then,
+   as a page does under a thumb: the top half of the square is the back of
+   the page folding over, the bottom half what lies beneath. */
+.page-curl {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 3.75rem;
+  aspect-ratio: 1;
+  pointer-events: none;
+  transform-origin: 100% 100%;
+  scale: 0;
+  background: linear-gradient(
+    to bottom right,
+    #a8664a,
+    #6e2a2a 32%,
+    var(--maroon-800) 47%,
+    rgb(201 162 77 / 0.8) 48.5% 50%,
+    var(--maroon-950) 50%
+  );
+  filter: drop-shadow(-3px -3px 5px rgb(0 0 0 / 0.5));
+  animation: page-curl 8s ease-in-out 3.5s 2;
+}
+
+@keyframes page-curl {
+  0%,
+  30%,
+  100% {
+    scale: 0;
+  }
+  10%,
+  18% {
+    scale: 1;
+  }
 }
 
 .lamp-hint {
@@ -316,7 +391,8 @@ html:has(.book) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lamp-hint {
+  .lamp-hint,
+  .page-curl {
     animation: none;
   }
 }

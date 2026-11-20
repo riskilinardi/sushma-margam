@@ -1,0 +1,55 @@
+.kolam {
+  color: var(--gold-500);
+  opacity: 0.6;
+  transition:
+    color 1.5s ease,
+    opacity 1.5s ease;
+}
+
+.kolam[data-lit] {
+  color: var(--gold-200);
+  opacity: 0.9;
+}
+
+.kolam-pool {
+  opacity: 0;
+  transition: opacity 1.5s ease 0.3s;
+}
+
+.kolam[data-lit] .kolam-pool {
+  opacity: 1;
+}
+
+.kolam-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kolam-dot 0.5s ease-out var(--delay) both;
+}
+
+.kolam-line {
+  stroke-dasharray: 1;
+  animation: kolam-draw var(--duration, 1.2s) ease-in-out var(--delay) both;
+}
+
+@keyframes kolam-dot {
+  from {
+    opacity: 0;
+    scale: 0;
+  }
+}
+
+@keyframes kolam-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kolam-dot,
+  .kolam-line {
+    animation: none;
+  }
+}

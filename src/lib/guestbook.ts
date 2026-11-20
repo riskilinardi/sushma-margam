@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "./supabase";
+import { getSupabase } from "./client";
 
 export type Wish = {
   id: number;
@@ -9,6 +9,7 @@ export type Wish = {
 };
 
 export async function addWish(name: string, message: string) {
+  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from("wishes")
     .insert({ name: name.trim(), message: message.trim() })
@@ -19,11 +20,13 @@ export async function addWish(name: string, message: string) {
 }
 
 export async function removeWish(id: number) {
+  const supabase = await getSupabase();
   const { error } = await supabase.from("wishes").delete().eq("id", id);
   if (error) throw error;
 }
 
 export async function setGuestbookOpen(open: boolean) {
+  const supabase = await getSupabase();
   const { error } = await supabase
     .from("settings")
     .update({ guestbook_open: open })
@@ -41,45 +44,51 @@ export function useGuestbook(live: boolean) {
   useEffect(() => {
     if (!live) return;
     let cancelled = false;
+    let stop: (() => void) | undefined;
 
-    Promise.all([
-      supabase
-        .from("wishes")
-        .select("id, name, message, created_at")
-        .order("created_at", { ascending: false })
-        .limit(500),
-      supabase.from("settings").select("guestbook_open").single(),
-    ]).then(([list, settings]) => {
+    getSupabase().then((supabase) => {
       if (cancelled) return;
-      setWishes(list.data ?? []);
-      if (settings.data) setOpen(settings.data.guestbook_open);
-    });
 
-    const channel = supabase
-      .channel("guestbook")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "wishes" },
-        ({ new: wish }) => setWishes((list) => withWish(list, wish as Wish)),
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "wishes" },
-        ({ old }) =>
-          setWishes(
-            (list) => list?.filter((wish) => wish.id !== old.id) ?? null,
-          ),
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "settings" },
-        ({ new: settings }) => setOpen(settings.guestbook_open),
-      )
-      .subscribe();
+      Promise.all([
+        supabase
+          .from("wishes")
+          .select("id, name, message, created_at")
+          .order("created_at", { ascending: false })
+          .limit(500),
+        supabase.from("settings").select("guestbook_open").single(),
+      ]).then(([list, settings]) => {
+        if (cancelled) return;
+        setWishes(list.data ?? []);
+        if (settings.data) setOpen(settings.data.guestbook_open);
+      });
+
+      const channel = supabase
+        .channel("guestbook")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "wishes" },
+          ({ new: wish }) => setWishes((list) => withWish(list, wish as Wish)),
+        )
+        .on(
+          "postgres_changes",
+          { event: "DELETE", schema: "public", table: "wishes" },
+          ({ old }) =>
+            setWishes(
+              (list) => list?.filter((wish) => wish.id !== old.id) ?? null,
+            ),
+        )
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "settings" },
+          ({ new: settings }) => setOpen(settings.guestbook_open),
+        )
+        .subscribe();
+      stop = () => supabase.removeChannel(channel);
+    });
 
     return () => {
       cancelled = true;
-      supabase.removeChannel(channel);
+      stop?.();
     };
   }, [live]);
 

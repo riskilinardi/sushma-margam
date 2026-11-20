@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "./supabase";
+import { getSupabase } from "./client";
 
 export type Photo = {
   id: number;
@@ -9,10 +9,11 @@ export type Photo = {
   created_at: string;
 };
 
-const bucket = () => supabase.storage.from("gallery");
+const BUCKET = "gallery";
 
+// Where Supabase serves a file in a public bucket.
 export function photoUrl(path: string) {
-  return bucket().getPublicUrl(path).data.publicUrl;
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
 }
 
 // Phone photos are 3–10 MB. Shrinking them first makes uploads quick on
@@ -36,10 +37,14 @@ async function shrink(file: File, longest = 2000) {
 }
 
 export async function uploadPhoto(file: File) {
-  const { blob, width, height } = await shrink(file);
+  const [{ blob, width, height }, supabase] = await Promise.all([
+    shrink(file),
+    getSupabase(),
+  ]);
+  const files = supabase.storage.from(BUCKET);
   const path = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}.jpg`;
 
-  const upload = await bucket().upload(path, blob, {
+  const upload = await files.upload(path, blob, {
     contentType: "image/jpeg",
     cacheControl: "31536000",
   });
@@ -49,15 +54,16 @@ export async function uploadPhoto(file: File) {
     .from("photos")
     .insert({ path, width, height });
   if (error) {
-    await bucket().remove([path]);
+    await files.remove([path]);
     throw error;
   }
 }
 
 export async function removePhoto(photo: Photo) {
+  const supabase = await getSupabase();
   const { error } = await supabase.from("photos").delete().eq("id", photo.id);
   if (error) throw error;
-  await bucket().remove([photo.path]);
+  await supabase.storage.from(BUCKET).remove([photo.path]);
 }
 
 // Photos newest first, kept live while `live` is true. Null until loaded.
@@ -67,36 +73,42 @@ export function useGallery(live: boolean) {
   useEffect(() => {
     if (!live) return;
     let cancelled = false;
+    let stop: (() => void) | undefined;
 
-    supabase
-      .from("photos")
-      .select("id, path, width, height, created_at")
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        if (!cancelled && data) setPhotos(data);
-      });
+    getSupabase().then((supabase) => {
+      if (cancelled) return;
 
-    const channel = supabase
-      .channel("gallery")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "photos" },
-        ({ new: photo }) =>
-          setPhotos((list) => [photo as Photo, ...(list ?? [])]),
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "photos" },
-        ({ old }) =>
-          setPhotos(
-            (list) => list?.filter((photo) => photo.id !== old.id) ?? null,
-          ),
-      )
-      .subscribe();
+      supabase
+        .from("photos")
+        .select("id, path, width, height, created_at")
+        .order("created_at", { ascending: false })
+        .then(({ data }) => {
+          if (!cancelled && data) setPhotos(data);
+        });
+
+      const channel = supabase
+        .channel("gallery")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "photos" },
+          ({ new: photo }) =>
+            setPhotos((list) => [photo as Photo, ...(list ?? [])]),
+        )
+        .on(
+          "postgres_changes",
+          { event: "DELETE", schema: "public", table: "photos" },
+          ({ old }) =>
+            setPhotos(
+              (list) => list?.filter((photo) => photo.id !== old.id) ?? null,
+            ),
+        )
+        .subscribe();
+      stop = () => supabase.removeChannel(channel);
+    });
 
     return () => {
       cancelled = true;
-      supabase.removeChannel(channel);
+      stop?.();
     };
   }, [live]);
 

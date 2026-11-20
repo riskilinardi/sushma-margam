@@ -29,7 +29,7 @@ export function Dock({
   const openContents = () => setContentsOpen(true);
 
   return (
-    <footer className="relative flex flex-col items-center justify-center gap-3 border-t border-gold-500/30 bg-maroon-950 px-4 pb-[env(safe-area-inset-bottom)]">
+    <footer className="dock relative flex flex-col items-center justify-center gap-3 border-t border-gold-500/30 bg-maroon-950 px-4 pb-[env(safe-area-inset-bottom)]">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-1.5 h-2.5 zari-band text-gold-500/35"
@@ -47,17 +47,7 @@ export function Dock({
       </p>
 
       <div className="flex w-full max-w-md items-center gap-3">
-        <RoundButton
-          label={sound ? "Mute music" : "Play music"}
-          pressed={sound}
-          onClick={onToggleSound}
-        >
-          {sound ? (
-            <path d="M2 6h3l4-3.5v11L5 10H2zM11.5 5.5a3.5 3.5 0 0 1 0 5M13.5 3.5a6.3 6.3 0 0 1 0 9" />
-          ) : (
-            <path d="M2 6h3l4-3.5v11L5 10H2zM11 6l4 4M15 6l-4 4" />
-          )}
-        </RoundButton>
+        <SoundButton on={sound} onClick={onToggleSound} />
 
         <RoundButton
           label="Previous page"
@@ -110,6 +100,29 @@ export function Dock({
         onClose={() => setContentsOpen(false)}
       />
     </footer>
+  );
+}
+
+// Also on the lamp screen, so guests can turn the sound off before lighting.
+export function SoundButton({
+  on,
+  onClick,
+}: {
+  on: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <RoundButton
+      label={on ? "Turn sound off" : "Turn sound on"}
+      pressed={on}
+      onClick={onClick}
+    >
+      {on ? (
+        <path d="M2 6h3l4-3.5v11L5 10H2zM11.5 5.5a3.5 3.5 0 0 1 0 5M13.5 3.5a6.3 6.3 0 0 1 0 9" />
+      ) : (
+        <path d="M2 6h3l4-3.5v11L5 10H2zM11 6l4 4M15 6l-4 4" />
+      )}
+    </RoundButton>
   );
 }
 

@@ -13,6 +13,15 @@
   scale: 1;
 }
 
+.lamp-warm {
+  opacity: 0;
+  transition: opacity 1.2s ease 0.2s;
+}
+
+[data-lit] .lamp-warm {
+  opacity: 1;
+}
+
 .lamp-flicker {
   transform-box: fill-box;
   transform-origin: 50% 100%;

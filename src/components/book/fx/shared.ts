@@ -1,5 +1,3 @@
-import { animate } from "motion";
-
 export type Point = { x: number; y: number };
 
 export type RevealContext = {
@@ -20,11 +18,23 @@ export const easeOut = (t: number) => 1 - (1 - t) ** 3;
 export const easeInOut = (t: number) =>
   t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2;
 
-// Drives `frame` from 0 to 1. The first frame runs immediately so nothing
-// flashes before the animation starts.
-export async function play(seconds: number, frame: (t: number) => void) {
+// Drives `frame` from 0 to 1 over `seconds`, optionally eased. The first
+// frame runs immediately so nothing flashes before the animation starts.
+export function play(
+  seconds: number,
+  frame: (t: number) => void,
+  ease = (t: number) => t,
+) {
   frame(0);
-  await animate(0, 1, { duration: seconds, ease: "linear", onUpdate: frame });
+  return new Promise<void>((resolve) => {
+    const start = performance.now();
+    requestAnimationFrame(function tick(now) {
+      const t = clamp((now - start) / (seconds * 1000));
+      frame(ease(t));
+      if (t < 1) requestAnimationFrame(tick);
+      else resolve();
+    });
+  });
 }
 
 export function setMask(

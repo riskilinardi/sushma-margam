@@ -1,66 +1,88 @@
 import {
   clamp,
   easeInOut,
+  easeOut,
+  lerp,
   play,
-  setMask,
   sizeOf,
   type Point,
-  type RevealContext,
 } from "./shared";
 
-const TONGUES = 12;
+type LampLightProps = {
+  // The lamp screen, which dissolves into the light.
+  lamp: HTMLElement;
+  // The book under it, which emerges as the light gathers.
+  book: HTMLElement;
+  layer: HTMLElement;
+  flames: Point;
+  // Where the light comes to rest: her halo on the cover.
+  halo: { centre: Point; radius: number };
+  // Called while the light fills the screen, to start the cover's entrance.
+  onFull: () => void;
+};
 
-// Lamp light spreading from the touch point. The edge is a ring of
-// flickering lobes rather than a clean circle, with embers thrown off it.
-export async function flame({ incoming, layer, origin }: RevealContext) {
-  const { width, height } = sizeOf(incoming);
+// The lamp's light swells until it washes over the screen, the lamp
+// dissolving into it, then gathers into the halo behind her on the cover, so
+// her halo is lit by the lamp the guest has just lit. The book stays hidden
+// until the light is full, so the lamp and the cover never show at once.
+export async function lampLight({
+  lamp,
+  book,
+  layer,
+  flames,
+  halo,
+  onFull,
+}: LampLightProps) {
+  const { width, height } = sizeOf(layer);
   const reach =
     Math.hypot(
-      Math.max(origin.x, width - origin.x),
-      Math.max(origin.y, height - origin.y),
-    ) * 1.25;
+      Math.max(flames.x, width - flames.x),
+      Math.max(flames.y, height - flames.y),
+    ) * 1.1;
 
-  const tongues = Array.from({ length: TONGUES }, (_, i) => {
-    const angle = (i / TONGUES) * Math.PI * 2 + Math.random() * 0.3;
-    // Fire leans upward, so tongues on the top of the circle are taller.
-    const lift = 1 + 0.7 * Math.max(0, -Math.sin(angle));
-    return {
-      angle,
-      size: (0.14 + Math.random() * 0.08) * lift,
-      phase: Math.random() * Math.PI * 2,
-    };
-  });
-
-  const glow = document.createElement("div");
-  glow.className = "fx-fill";
-  layer.append(glow);
+  const light = document.createElement("div");
+  light.className = "fx-fill";
+  layer.append(light);
   const embers = new Embers(layer);
 
-  await play(1.3, (t) => {
-    const radius = easeInOut(t) * reach;
-    const time = performance.now() / 1000;
-    const at = (x: number, y: number) => `circle at ${x}px ${y}px`;
-
-    const shapes = [
-      `radial-gradient(${at(origin.x, origin.y)}, #000 ${radius * 0.9}px, transparent ${radius}px)`,
-    ];
-    for (const tongue of tongues) {
-      const size =
-        radius * tongue.size * (1 + 0.3 * Math.sin(time * 11 + tongue.phase));
-      const x = origin.x + Math.cos(tongue.angle) * radius * 0.92;
-      const y = origin.y + Math.sin(tongue.angle) * radius * 0.92;
-      shapes.push(
-        `radial-gradient(${at(x, y)}, #000 ${size * 0.55}px, transparent ${size}px)`,
-      );
-    }
-    setMask(incoming, shapes.join(","));
-
-    glow.style.background = `radial-gradient(${at(origin.x, origin.y)}, transparent ${radius * 0.75}px, rgb(255 176 72 / ${0.5 * (1 - t)}) ${radius}px, transparent ${radius * 1.15 + 24}px)`;
-    embers.emit(origin, radius, clamp(1.2 - t));
+  book.style.opacity = "0";
+  await play(0.8, (t) => {
+    const swell = easeInOut(t);
+    const radius = lerp(30, reach, swell);
+    shine(light, flames, radius, swell);
+    lamp.style.opacity = String(1 - clamp((t - 0.45) / 0.55));
+    embers.emit(flames, radius * 0.35, 1 - t);
   });
 
-  glow.remove();
+  onFull();
   embers.retire();
+
+  await play(1, (t) => {
+    const gather = easeOut(t);
+    const centre = {
+      x: lerp(flames.x, halo.centre.x, gather),
+      y: lerp(flames.y, halo.centre.y, gather),
+    };
+    shine(light, centre, lerp(reach, halo.radius, gather), 1 - easeInOut(t));
+    book.style.opacity = String(easeOut(clamp(t / 0.6)));
+  });
+
+  book.style.removeProperty("opacity");
+  light.remove();
+}
+
+// Warm rather than white: guests may open this in a dark theatre.
+function shine(
+  element: HTMLElement,
+  { x, y }: Point,
+  radius: number,
+  strength: number,
+) {
+  element.style.background = `radial-gradient(circle at ${x}px ${y}px,
+    rgb(255 226 170 / ${0.85 * strength}) 0,
+    rgb(232 170 90 / ${0.6 * strength}) ${radius * 0.4}px,
+    rgb(140 60 30 / ${0.35 * strength}) ${radius * 0.75}px,
+    rgb(140 60 30 / 0) ${radius}px)`;
 }
 
 type Spark = {
@@ -73,6 +95,7 @@ type Spark = {
   size: number;
 };
 
+// Fine sparks thrown off the light as it swells, drifting up as they fade.
 class Embers {
   private readonly canvas = document.createElement("canvas");
   private readonly context = this.canvas.getContext("2d")!;
@@ -92,21 +115,18 @@ class Embers {
     requestAnimationFrame(this.tick);
   }
 
-  // A few fine sparks per frame, thrown off the edge once the light has
-  // some size, so they never bunch up around the flame.
   emit(origin: Point, radius: number, strength: number) {
-    if (radius < 60) return;
     for (let i = 0; i < 2; i++) {
       if (Math.random() > strength * 0.7) continue;
       const angle = Math.random() * Math.PI * 2;
-      const speed = 70 + Math.random() * 90;
+      const speed = 60 + Math.random() * 80;
       this.sparks.push({
         x: origin.x + Math.cos(angle) * radius,
         y: origin.y + Math.sin(angle) * radius,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 50,
+        vy: Math.sin(angle) * speed - 60,
         age: 0,
-        life: 0.5 + Math.random() * 0.5,
+        life: 0.6 + Math.random() * 0.6,
         size: 0.5 + Math.random() * 0.9,
       });
     }

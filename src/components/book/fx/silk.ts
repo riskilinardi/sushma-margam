@@ -1,5 +1,35 @@
-import { animate } from "motion";
-import { clamp } from "./shared";
+import { clamp, easeInOut, play } from "./shared";
+
+// Carries a page let go mid-turn to rest at `to`, starting at the speed the
+// finger left it (in turns per second), with a hint of overshoot.
+function spring(
+  from: number,
+  to: number,
+  velocity: number,
+  frame: (value: number) => void,
+) {
+  const stiffness = 170;
+  const damping = 24;
+  let value = from;
+  let speed = velocity;
+  let last = performance.now();
+
+  return new Promise<void>((resolve) => {
+    requestAnimationFrame(function tick(now) {
+      // Small fixed steps keep a stiff spring steady at any frame rate.
+      for (let left = Math.min(now - last, 64); left > 0; left -= 4) {
+        const dt = Math.min(left, 4) / 1000;
+        speed += (-stiffness * (value - to) - damping * speed) * dt;
+        value += speed * dt;
+      }
+      last = now;
+      const resting = Math.abs(to - value) < 0.002 && Math.abs(speed) < 0.05;
+      frame(resting ? to : value);
+      if (resting) resolve();
+      else requestAnimationFrame(tick);
+    });
+  });
+}
 
 // A page hinged on its left edge, like a book. Forward turns swing the
 // current page from 0° to -180°; backward turns bring the previous page
@@ -32,15 +62,8 @@ export function silkTurn(
     shadow.style.setProperty("--reach", `${(1 - turned) * 100}%`);
   }
 
-  async function settle(to: 0 | 1, velocity: number) {
-    await animate(progress, to, {
-      type: "spring",
-      stiffness: 170,
-      damping: 24,
-      restDelta: 0.002,
-      velocity,
-      onUpdate: apply,
-    });
+  function settle(to: 0 | 1, velocity: number) {
+    return spring(progress, to, velocity, apply);
   }
 
   apply(0);
@@ -52,13 +75,7 @@ export function silkTurn(
     drag: apply,
     finish: (velocity = 0) => settle(1, velocity),
     cancel: (velocity = 0) => settle(0, velocity),
-    async play() {
-      await animate(0, 1, {
-        duration: 0.9,
-        ease: [0.65, 0, 0.35, 1],
-        onUpdate: apply,
-      });
-    },
+    play: () => play(0.9, apply, easeInOut),
   };
 }
 
