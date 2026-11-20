@@ -11,7 +11,7 @@ import { WishesPage } from "@/components/book/pages/WishesPage";
 import { programme } from "@/content/programme";
 
 const pages: BookPage[] = [
-  { name: "Cover", content: <CoverPage /> },
+  { name: "Cover", content: <CoverPage />, fill: true },
   { name: "Wishes", content: <WishesPage />, fill: true },
   { name: "Her Story", content: <StoryPage /> },
   { name: "Her Teachers", content: <TeachersPage /> },
@@ -19,6 +19,7 @@ const pages: BookPage[] = [
   ...programme.map((item, index) => ({
     name: item.name,
     content: <ItemPage item={item} number={index + 1} />,
+    under: "Programme",
   })),
   { name: "Gallery", content: <GalleryPage />, fill: true },
   { name: "Lyrics", content: <LyricsPage />, fill: true },

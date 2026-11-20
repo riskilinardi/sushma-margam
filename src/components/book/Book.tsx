@@ -32,6 +32,8 @@ export type BookPage = {
   // Fills the page as laid out, instead of being shrunk to fit. For pages
   // that scroll part of themselves, like the lyrics.
   fill?: boolean;
+  // The page it sits under in the contents, e.g. each piece under Programme.
+  under?: string;
 };
 
 type BookApi = {
@@ -301,6 +303,8 @@ export function Book({ pages, moments = {} }: BookProps) {
   useEffect(() => {
     if (!opened) return;
     function onKeyDown(event: KeyboardEvent) {
+      // Arrow keys belong to whatever dialog is open (contents, a photo).
+      if (document.querySelector("dialog[open]")) return;
       const middle = { x: innerWidth / 2, y: innerHeight / 2 };
       if (event.key === "ArrowRight") go(current.current + 1, middle);
       if (event.key === "ArrowLeft") go(current.current - 1, middle);
@@ -358,7 +362,7 @@ export function Book({ pages, moments = {} }: BookProps) {
         </div>
 
         <Dock
-          pages={pages.map((page) => page.name)}
+          pages={pages}
           current={index}
           sound={sound}
           onGo={go}

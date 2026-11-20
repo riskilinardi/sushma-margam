@@ -213,12 +213,43 @@ html:has(.book) {
   overflow-y: auto;
   overscroll-behavior: contain;
   touch-action: pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(201 162 77 / 0.45) transparent;
   mask-image: linear-gradient(
     transparent,
     #000 1.25rem,
     #000 calc(100% - 2rem),
     transparent
   );
+}
+
+/* The contents rise from the bottom like a sheet pulled from under the book. */
+.contents-sheet[open] {
+  animation: sheet-rise 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.contents-sheet::backdrop {
+  background: rgb(8 2 3 / 0.65);
+  animation: backdrop-in 0.4s ease;
+}
+
+@keyframes sheet-rise {
+  from {
+    translate: 0 100%;
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contents-sheet[open],
+  .contents-sheet::backdrop {
+    animation: none;
+  }
 }
 
 .fx-layer {

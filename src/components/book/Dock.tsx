@@ -1,8 +1,9 @@
-import type { MouseEvent, ReactNode } from "react";
+import { useState, type MouseEvent, type ReactNode } from "react";
+import { Contents } from "./Contents";
 import type { Point } from "./fx/shared";
 
 type DockProps = {
-  pages: string[];
+  pages: { name: string; under?: string }[];
   current: number;
   sound: boolean;
   onGo: (page: number, from: Point) => void;
@@ -15,7 +16,8 @@ function centreOf(event: MouseEvent<HTMLElement>): Point {
 }
 
 // The bottom fifth of the screen: lyrics along the top (once the music is
-// in), then sound, page turning and where you are in the book.
+// in), then sound, page turning, and the page you're on set like a printed
+// book's folio. The page name and the list button open the contents.
 export function Dock({
   pages,
   current,
@@ -23,7 +25,8 @@ export function Dock({
   onGo,
   onToggleSound,
 }: DockProps) {
-  const progress = (current / (pages.length - 1)) * 100;
+  const [contentsOpen, setContentsOpen] = useState(false);
+  const openContents = () => setContentsOpen(true);
 
   return (
     <footer className="relative flex flex-col items-center justify-center gap-3 border-t border-gold-500/30 bg-maroon-950 px-4 pb-[env(safe-area-inset-bottom)]">
@@ -64,27 +67,22 @@ export function Dock({
           <path d="M10 3L5 8l5 5" />
         </RoundButton>
 
-        <div className="flex min-w-0 flex-1 flex-col items-center gap-2">
-          <p
-            aria-live="polite"
-            className="truncate font-display text-[0.65rem] tracking-[0.25em] text-gold-200 uppercase"
-          >
-            {pages[current]}
-          </p>
-          {/* Too many pages for a dot each: a gold thread with a diamond
-              that travels along it as you read. */}
-          <div aria-hidden="true" className="relative h-2 w-full max-w-40">
-            <div className="absolute inset-x-0 top-1/2 h-px bg-gold-500/30" />
-            <div
-              className="absolute top-1/2 left-0 h-px bg-gold-500 transition-[width] duration-700"
-              style={{ width: `${progress}%` }}
-            />
-            <div
-              className="absolute top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gold-500 transition-[left] duration-700"
-              style={{ left: `${progress}%` }}
-            />
-          </div>
-        </div>
+        <button
+          type="button"
+          onClick={openContents}
+          aria-haspopup="dialog"
+          aria-label={`${pages[current].name}, page ${current + 1} of ${pages.length}. Open contents`}
+          className="flex min-w-0 flex-1 flex-col items-center gap-1.5"
+        >
+          <span className="max-w-full truncate font-display text-[0.65rem] tracking-[0.25em] text-gold-200 uppercase">
+            {pages[current].name}
+          </span>
+          <span className="flex items-center gap-2 text-sm text-ivory/70 italic">
+            <span className="h-px w-5 bg-linear-to-r from-transparent to-gold-500/60" />
+            {current + 1} of {pages.length}
+            <span className="h-px w-5 bg-linear-to-l from-transparent to-gold-500/60" />
+          </span>
+        </button>
 
         <RoundButton
           label="Next page"
@@ -94,10 +92,23 @@ export function Dock({
           <path d="M6 3l5 5-5 5" />
         </RoundButton>
 
-        <p className="w-10 text-center font-display text-[0.65rem] text-ivory/70">
-          {current + 1}/{pages.length}
-        </p>
+        <RoundButton label="Contents" onClick={openContents}>
+          <path d="M5.5 4h8M5.5 8h8M5.5 12h8" />
+          <path d="M2.5 4h.01M2.5 8h.01M2.5 12h.01" strokeWidth="2" />
+        </RoundButton>
       </div>
+
+      <p aria-live="polite" className="sr-only">
+        {pages[current].name}
+      </p>
+
+      <Contents
+        open={contentsOpen}
+        pages={pages}
+        current={current}
+        onPick={onGo}
+        onClose={() => setContentsOpen(false)}
+      />
     </footer>
   );
 }

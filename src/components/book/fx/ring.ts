@@ -9,14 +9,12 @@ import {
   type RevealContext,
 } from "./shared";
 
-// Same geometry as the cover's FireRing.
-const FLAME =
-  "M0 0C-5 0-6-5-4-9C-2.5-12.5 0-14 2-20C2-15.5 5-13 5-8.5C5-3.5 3.5 0 0 0Z";
-const COUNT = 36;
-const INNER = 75 / 200;
+// The page opens inside the halo's dotted ring (radius 86 of 200).
+const INNER = 86 / 200;
 
-// The ring of fire becomes a portal: the next page opens inside it, then the
-// ring rushes past the viewer.
+// The halo behind her on the cover becomes a portal: the next page opens
+// inside it, then the halo rushes past the viewer, brightening as it comes.
+// Without a halo on the page, the portal starts in the middle.
 export async function ring({ incoming, outgoing, layer }: RevealContext) {
   const { width, height } = sizeOf(incoming);
   const page = incoming.getBoundingClientRect();
@@ -39,14 +37,14 @@ export async function ring({ incoming, outgoing, layer }: RevealContext) {
   );
   const endScale = (reach / (box.width * INNER)) * 1.3;
 
-  const portal = fireRing(layer, box);
+  const portal = halo(layer, box);
 
   await play(1.4, (t) => {
     const open = easeOut(clamp(t / 0.25));
     const rush = easeIn(clamp((t - 0.15) / 0.85));
     const scale = endScale ** rush;
 
-    portal.style.transform = `scale(${scale}) rotate(${rush * 140}deg)`;
+    portal.style.transform = `scale(${scale}) rotate(${rush * 90}deg)`;
     portal.style.opacity = String(
       clamp(t / 0.1) * (1 - clamp((t - 0.75) / 0.25)),
     );
@@ -61,29 +59,29 @@ export async function ring({ incoming, outgoing, layer }: RevealContext) {
   portal.remove();
 }
 
-function fireRing(layer: HTMLElement, box: DOMRect) {
+// The same rings as the cover's Halo, drawn brighter.
+function halo(layer: HTMLElement, box: DOMRect) {
   const element = svg(
     "svg",
     {
       viewBox: "-100 -100 200 200",
-      style: `position: absolute; left: ${box.left}px; top: ${box.top}px; width: ${box.width}px; height: ${box.height}px; color: var(--gold-500); will-change: transform`,
+      fill: "none",
+      stroke: "currentColor",
+      style: `position: absolute; left: ${box.left}px; top: ${box.top}px; width: ${box.width}px; height: ${box.height}px; color: var(--gold-200); will-change: transform`,
     },
     layer,
   );
-  const lines = svg("g", { fill: "none", stroke: "currentColor" }, element);
-  svg("circle", { r: 80, "stroke-width": 1.4 }, lines);
-  svg("circle", { r: 75, "stroke-width": 0.5 }, lines);
-
-  const flames = svg("g", { fill: "currentColor" }, element);
-  for (let i = 0; i < COUNT; i++) {
-    svg(
-      "path",
-      {
-        d: FLAME,
-        transform: `rotate(${(i * 360) / COUNT}) translate(0 -79) scale(${i % 2 ? 0.55 : 1})`,
-      },
-      flames,
-    );
-  }
+  svg("circle", { r: 96, "stroke-width": 0.9 }, element);
+  svg("circle", { r: 92, "stroke-width": 0.35, opacity: 0.6 }, element);
+  svg(
+    "circle",
+    {
+      r: 86,
+      "stroke-width": 2,
+      "stroke-dasharray": "0.1 4.5",
+      "stroke-linecap": "round",
+    },
+    element,
+  );
   return element;
 }

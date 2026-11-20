@@ -64,7 +64,9 @@ export function LyricsPage() {
             className="group relative grid size-8 place-items-center"
           >
             <span className="absolute inset-1.5 rotate-45 border border-gold-500 bg-maroon-950 transition-colors group-aria-selected:bg-gold-500" />
-            <span className="relative font-display text-[0.6rem] text-gold-200 group-aria-selected:text-maroon-950">
+            {/* Trimmed to the digits' own height, or Cinzel's tall line box
+                leaves them sitting high in the diamond. */}
+            <span className="relative font-display text-[0.6rem] leading-none text-gold-200 [text-box:trim-both_cap_alphabetic] group-aria-selected:font-bold group-aria-selected:text-maroon-950">
               {i + 1}
             </span>
           </button>

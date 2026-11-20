@@ -60,15 +60,15 @@ export function Countdown({ to, className = "" }: CountdownProps) {
           ? `${left.days} days, ${left.hours} hours and ${left.minutes} minutes to go`
           : undefined
       }
-      className={`flex justify-center divide-x divide-gold-500/30 lg:justify-start ${className}`}
+      className={`flex divide-x divide-gold-500/30 ${className}`}
     >
       {units.map(({ word, value }) => (
         <div
           key={word}
           aria-hidden="true"
-          className="px-5 text-center sm:px-7 lg:first:pl-0"
+          className="px-5 text-center first:pl-0 last:pr-0 sm:px-7"
         >
-          <span className="block text-gilded font-display text-3xl sm:text-4xl lg:text-5xl">
+          <span className="block text-gilded font-display text-[min(2rem,6.5cqh)] lg:text-5xl">
             {value === undefined ? "–" : String(value).padStart(2, "0")}
           </span>
           <span className="mt-2 block font-display text-[0.65rem] tracking-[0.3em] text-ivory/75 uppercase">
