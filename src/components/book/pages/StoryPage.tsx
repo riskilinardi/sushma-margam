@@ -1,6 +1,6 @@
 import { Placeholder } from "@/components/ui/Placeholder";
 import { story } from "@/content/story";
-import { PageHeading } from "./PageHeading";
+import { Page } from "./Page";
 
 // Then and now: her first dance beside her today, the earlier one a little
 // smaller.
@@ -8,10 +8,12 @@ export function StoryPage() {
   const [then, now] = story.photos;
 
   return (
-    <div className="mx-auto max-w-md text-center lg:max-w-2xl">
-      <PageHeading eyebrow="The Dancer" title="Her Story" />
-
-      <div className="mt-6 flex items-end justify-center gap-5">
+    <Page
+      eyebrow="The Dancer"
+      title="Her Story"
+      className="max-w-md lg:max-w-2xl"
+    >
+      <div className="flex items-end justify-center gap-5">
         {[
           { photo: then, size: "h-[24cqh]" },
           { photo: now, size: "h-[30cqh]" },
@@ -35,6 +37,6 @@ export function StoryPage() {
           </p>
         ))}
       </div>
-    </div>
+    </Page>
   );
 }

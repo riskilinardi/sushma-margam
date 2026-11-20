@@ -9,6 +9,9 @@ html:has(.book) {
   inset: 0;
   display: grid;
   grid-template-rows: 1fr minmax(7rem, 20%);
+  /* Without this the column grows to fit a long page name in the dock and
+     pushes the right edge of everything off screen. */
+  grid-template-columns: minmax(0, 1fr);
   background: var(--maroon-950);
 }
 

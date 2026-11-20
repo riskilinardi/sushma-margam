@@ -2,7 +2,7 @@
 
 import { programme } from "@/content/programme";
 import { useBook } from "../Book";
-import { PageHeading } from "./PageHeading";
+import { Page } from "./Page";
 
 // The whole Margam on one page, strung on the gold thread. Each piece opens
 // its own page.
@@ -10,9 +10,8 @@ export function ProgrammePage() {
   const { goTo } = useBook();
 
   return (
-    <div className="mx-auto max-w-sm">
-      <PageHeading eyebrow="The Repertoire" title="Programme" />
-      <p className="mt-3 text-center text-sm text-ivory/70 italic">
+    <Page eyebrow="The Repertoire" title="Programme" className="max-w-sm">
+      <p className="text-sm text-ivory/70 italic">
         Tap a piece to read about it
       </p>
 
@@ -42,6 +41,6 @@ export function ProgrammePage() {
           </li>
         ))}
       </ol>
-    </div>
+    </Page>
   );
 }

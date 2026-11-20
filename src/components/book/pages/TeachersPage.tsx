@@ -1,14 +1,13 @@
 import { formerTeachers, guru, type Teacher } from "@/content/teachers";
 import { event } from "@/content/event";
-import { labelClass, PageHeading } from "./PageHeading";
+import { Page } from "./Page";
+import { labelClass } from "./PageHeading";
 
 // Guru parampara: the line of teachers, read from the past down to her.
 export function TeachersPage() {
   return (
-    <div className="mx-auto max-w-sm text-center">
-      <PageHeading eyebrow="Guru Parampara" title="Her Teachers" />
-
-      <div data-settle className="mt-7">
+    <Page eyebrow="Guru Parampara" title="Her Teachers" className="max-w-sm">
+      <div data-settle>
         <p className={labelClass}>In gratitude to former teachers</p>
         {formerTeachers.map((teacher) => (
           <p key={teacher.name} className="mt-2 text-xl">
@@ -31,7 +30,7 @@ export function TeachersPage() {
       <p data-settle className="text-xl text-ivory/85 italic">
         {event.dancer}
       </p>
-    </div>
+    </Page>
   );
 }
 

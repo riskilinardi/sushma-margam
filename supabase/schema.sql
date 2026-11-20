@@ -40,6 +40,11 @@ create policy "Admins can change settings" on public.settings
   for update to authenticated
   using (public.is_admin()) with check (public.is_admin());
 
+-- Newer projects don't open tables to the API by themselves. The grants say
+-- what each role may do at all; the policies then say to which rows.
+grant select on public.settings to anon, authenticated;
+grant update (guestbook_open) on public.settings to authenticated;
+
 -- Wishes from guests.
 create table if not exists public.wishes (
   id bigint generated always as identity primary key,
@@ -60,6 +65,10 @@ create policy "Guests can write while the guestbook is open" on public.wishes
 drop policy if exists "Admins can remove wishes" on public.wishes;
 create policy "Admins can remove wishes" on public.wishes
   for delete to authenticated using (public.is_admin());
+
+grant select on public.wishes to anon, authenticated;
+grant insert (name, message) on public.wishes to anon, authenticated;
+grant delete on public.wishes to authenticated;
 
 -- Gallery photos. The files live in the public "gallery" bucket; this table
 -- keeps their order and size so the page can lay them out before they load.
@@ -83,6 +92,9 @@ create policy "Admins can add photos" on public.photos
 drop policy if exists "Admins can remove photos" on public.photos;
 create policy "Admins can remove photos" on public.photos
   for delete to authenticated using (public.is_admin());
+
+grant select on public.photos to anon, authenticated;
+grant insert (path, width, height), delete on public.photos to authenticated;
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('gallery', 'gallery', true, 10485760, array['image/jpeg', 'image/png', 'image/webp'])

@@ -21,6 +21,7 @@ The site is a storybook: one page at a time, turned by swiping, with a dock alon
 - `src/components/ui/` has the shared pieces: buttons, ornament, lamp, ring of fire and countdown.
 - `src/lib/guestbook.ts` and `src/lib/gallery.ts` talk to Supabase.
 - `src/app/admin/` is the page for running the evening: opening the guestbook, removing wishes, uploading photos.
+- `src/app/print/` is an A4 sheet with a QR code to the site, for putting up at the venue. Open `/print` on the live site and print it.
 - `src/app/globals.css` has the colour palette and fonts.
 
 Run `npm run format` before committing.

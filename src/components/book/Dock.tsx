@@ -74,7 +74,7 @@ export function Dock({
           aria-label={`${pages[current].name}, page ${current + 1} of ${pages.length}. Open contents`}
           className="flex min-w-0 flex-1 flex-col items-center gap-1.5"
         >
-          <span className="max-w-full truncate font-display text-[0.65rem] tracking-[0.25em] text-gold-200 uppercase">
+          <span className="line-clamp-2 max-w-full font-display text-[0.65rem] leading-snug tracking-[0.25em] text-balance text-gold-200 uppercase">
             {pages[current].name}
           </span>
           <span className="flex items-center gap-2 text-sm text-ivory/70 italic">

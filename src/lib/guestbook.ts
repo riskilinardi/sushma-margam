@@ -32,7 +32,8 @@ export async function setGuestbookOpen(open: boolean) {
 }
 
 // Wishes newest first, and whether guests can write, kept live while
-// `live` is true. Returns null until the first load.
+// `live` is true. Wishes are null until the first load, and an empty list
+// if it fails.
 export function useGuestbook(live: boolean) {
   const [wishes, setWishes] = useState<Wish[] | null>(null);
   const [open, setOpen] = useState(false);
@@ -50,7 +51,7 @@ export function useGuestbook(live: boolean) {
       supabase.from("settings").select("guestbook_open").single(),
     ]).then(([list, settings]) => {
       if (cancelled) return;
-      if (list.data) setWishes(list.data);
+      setWishes(list.data ?? []);
       if (settings.data) setOpen(settings.data.guestbook_open);
     });
 

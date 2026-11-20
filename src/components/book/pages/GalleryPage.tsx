@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Ornament } from "@/components/ui/Ornament";
 import { photoUrl, useGallery, type Photo } from "@/lib/gallery";
 import { useIsNearby } from "../Book";
 import { PageHeading } from "./PageHeading";
@@ -41,9 +40,23 @@ export function GalleryPage() {
           ))}
         </ul>
       ) : (
-        <div data-settle className="mt-10 text-center">
-          <Ornament className="justify-center" />
-          <p className="mt-4 text-lg text-ivory/75 italic">
+        // Empty mounts where the photos will go, fading down the page.
+        <div
+          data-settle
+          className="flex flex-1 flex-col items-center justify-center pb-[8cqh] text-center"
+        >
+          <div
+            aria-hidden="true"
+            className="grid w-full max-w-60 grid-cols-3 gap-2 [mask-image:linear-gradient(#000_20%,transparent)]"
+          >
+            {Array.from({ length: 6 }, (_, i) => (
+              <span
+                key={i}
+                className="aspect-square border border-gold-500/30 bg-maroon-900/50"
+              />
+            ))}
+          </div>
+          <p className="mt-6 text-lg text-ivory/80 italic">
             Photos from the evening will appear here.
           </p>
         </div>

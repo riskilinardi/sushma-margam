@@ -1,0 +1,33 @@
+/* One A4 sheet, printed edge to edge with its colours as set. */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+.print-sheet {
+  /* Gold a shade deeper, so it holds up on white paper. */
+  --gold-500: #b08a3e;
+
+  width: 210mm;
+  height: 297mm;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* No film grain on paper. */
+html:has(.print-sheet) body::after {
+  display: none;
+}
+
+@media screen {
+  .print-sheet {
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 60px rgb(0 0 0 / 0.5);
+  }
+}
+
+@media print {
+  html:has(.print-sheet) {
+    background: #fff;
+  }
+}

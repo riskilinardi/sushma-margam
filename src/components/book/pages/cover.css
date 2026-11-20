@@ -21,6 +21,27 @@
   animation: cover-turn 360s linear infinite;
 }
 
+/* On a phone her name sits low inside the halo, so the halo and rays fade
+   out before they reach it. */
+@media (width < 64rem) {
+  .cover-halo {
+    mask-image: linear-gradient(#000 50%, transparent 82%);
+  }
+
+  .cover-rays {
+    mask-image:
+      radial-gradient(
+        closest-side,
+        transparent 20%,
+        #000 42%,
+        rgb(0 0 0 / 0.4) 70%,
+        transparent 100%
+      ),
+      linear-gradient(#000 45%, transparent 80%);
+    mask-composite: intersect;
+  }
+}
+
 .cover-title {
   --gilded: linear-gradient(
     180deg,
