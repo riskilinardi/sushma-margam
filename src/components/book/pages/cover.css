@@ -55,13 +55,113 @@
     drop-shadow(0 0 22px rgb(255 190 110 / 0.2));
 }
 
-/* The reveal, played when the cover settles after the lamp: the light finds
-   the title on an empty stage, the halo blooms open, the rays appear, she
-   comes into focus, and then the details. */
+/* Gold leaf, with a band of light that can pass over it. Each letter
+   carries its own, so the light can reach them one after another. */
+.cover-letter {
+  display: inline-block;
+  background-image:
+    linear-gradient(
+      110deg,
+      transparent 40%,
+      rgb(255 250 230 / 0.9) 50%,
+      transparent 60%
+    ),
+    var(--gilded);
+  background-size:
+    300% 100%,
+    100% 100%;
+  background-position:
+    100% 0,
+    0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Her figure, lit from behind by the halo: a thin warm edge of light, then
+   the wider glow. */
+.cover-light {
+  filter: drop-shadow(0 -1px 1.5px rgb(255 224 176 / 0.7))
+    drop-shadow(0 0 24px rgb(255 190 110 / 0.3));
+}
+
+/* Warmed a touch, so the studio photo sits in the lamplight. */
+.cover-light img {
+  filter: sepia(0.06) saturate(1.05) contrast(1.04);
+}
+
+/* Gold brocade woven into the cover's silk, faint, and only towards the
+   edges, like the body of a saree around its border. */
+.leaf-front:has(.cover-title)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: url("/silk.svg") center / 56px 72px;
+  opacity: 0.1;
+  mask-image: radial-gradient(
+    ellipse 70% 65% at 50% 42%,
+    transparent 40%,
+    #000 100%
+  );
+}
+
+/* The poster breathes: the halo swells a little and the title and her
+   figure drift against each other, slowly enough to feel rather than see.
+   With a mouse, the layers also shift with it, nearer ones more. */
+.cover-aura,
+.cover-near,
+.cover-stage {
+  translate: calc(var(--px, 0) * var(--depth) * -1px)
+    calc(var(--py, 0) * var(--depth) * -0.6px);
+  transition: translate 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.cover-aura {
+  --depth: 4;
+  transform-origin: 46% 34%;
+  animation: cover-breathe 9s ease-in-out infinite alternate;
+}
+
+.cover-near {
+  --depth: 8;
+  animation: cover-float 13s ease-in-out infinite alternate;
+}
+
+.cover-stage {
+  --depth: 14;
+  transform-origin: 50% 100%;
+  animation: cover-rise 11s ease-in-out infinite alternate;
+}
+
+@media (width >= 64rem) {
+  .cover-aura {
+    transform-origin: 48.5% 34%;
+  }
+}
+
+/* The reveal, played when the cover settles after the lamp: the light
+   finds the title and its letters catch one by one, the halo blooms open,
+   the rays appear, she comes into focus, and then the details. After that
+   a glint crosses the gold now and then. */
 .leaf[data-settle="pending"] .cover-halo,
 .leaf[data-settle="pending"] .cover-rays,
 .leaf[data-settle="pending"] .cover-figure {
   opacity: 0;
+}
+
+.leaf[data-settle="pending"] .cover-letter {
+  filter: brightness(0.35) saturate(0.6);
+}
+
+/* The glint's band crosses each letter in twice the time it waits for the
+   one before (4% of 9s against 0.18s), at a steady speed, so the letters'
+   bands line up into one band of light crossing the word. */
+.leaf[data-settle="play"] .cover-letter {
+  animation:
+    cover-ignite 1.1s ease-out calc(var(--i) * 0.13s + 0.35s) both,
+    cover-shine 9s linear calc(var(--i) * 0.18s + 4s) infinite;
 }
 
 .leaf[data-settle="play"] .cover-halo {
@@ -106,6 +206,32 @@
   }
 }
 
+@keyframes cover-ignite {
+  from {
+    filter: brightness(0.35) saturate(0.6);
+  }
+  35% {
+    filter: brightness(1.6) drop-shadow(0 0 0.15em rgb(255 200 120 / 0.8));
+  }
+  to {
+    filter: brightness(1) drop-shadow(0 0 0 rgb(255 200 120 / 0));
+  }
+}
+
+@keyframes cover-shine {
+  0% {
+    background-position:
+      100% 0,
+      0 0;
+  }
+  4%,
+  100% {
+    background-position:
+      0% 0,
+      0 0;
+  }
+}
+
 @keyframes cover-bloom {
   from {
     opacity: 0;
@@ -129,9 +255,36 @@
   }
 }
 
+@keyframes cover-breathe {
+  to {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes cover-float {
+  to {
+    transform: translateY(0.4cqh);
+  }
+}
+
+@keyframes cover-rise {
+  to {
+    transform: translateY(-0.6cqh) scale(1.012);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cover-glow,
-  .cover-rays {
+  .cover-rays,
+  .cover-aura,
+  .cover-near,
+  .cover-stage {
     animation: none !important;
+  }
+
+  .cover-aura,
+  .cover-near,
+  .cover-stage {
+    translate: none;
   }
 }

@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   images: {
+    // 90 for her photo on the cover, which is seen large on sharp screens.
+    qualities: [75, 90],
     // Gallery photos uploaded on the day, served from Supabase Storage.
     remotePatterns: supabaseUrl
       ? [new URL(`${supabaseUrl}/storage/v1/object/public/gallery/**`)]

@@ -15,9 +15,9 @@ function centreOf(event: MouseEvent<HTMLElement>): Point {
   return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
 }
 
-// The bottom fifth of the screen: lyrics along the top (once the music is
-// in), then sound, page turning, and the page you're on set like a printed
-// book's folio. The page name and the list button open the contents.
+// The bottom fifth of the screen: sound, page turning, and the page you're
+// on set like a printed book's folio. The page name and the list button open
+// the contents.
 export function Dock({
   pages,
   current,
@@ -34,17 +34,6 @@ export function Dock({
         aria-hidden="true"
         className="absolute inset-x-0 top-1.5 h-2.5 zari-band text-gold-500/35"
       />
-
-      <p className="flex items-center gap-2 text-sm text-ivory/70 italic">
-        <svg
-          viewBox="0 0 16 16"
-          aria-hidden="true"
-          className="size-3.5 fill-gold-500/70"
-        >
-          <path d="M6 2.5l7-1.5v9.2a2.3 2.3 0 1 1-1.5-2.1V4.3L7.5 5.2v6.9a2.3 2.3 0 1 1-1.5-2.1z" />
-        </svg>
-        Lyrics will follow the music here
-      </p>
 
       <div className="flex w-full max-w-md items-center gap-3">
         <SoundButton on={sound} onClick={onToggleSound} />
