@@ -15,7 +15,7 @@ function centreOf(event: MouseEvent<HTMLElement>): Point {
   return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
 }
 
-// The bottom fifth of the screen: sound, page turning, and the page you're
+// The strip below the pages: sound, page turning, and the page you're
 // on set like a printed book's folio. The page name and the list button open
 // the contents.
 export function Dock({
@@ -29,7 +29,7 @@ export function Dock({
   const openContents = () => setContentsOpen(true);
 
   return (
-    <footer className="dock relative flex flex-col items-center justify-center gap-3 border-t border-gold-500/30 bg-maroon-950 px-4 pb-[env(safe-area-inset-bottom)]">
+    <footer className="dock relative flex flex-col items-center justify-center border-t border-gold-500/30 bg-maroon-950 px-4 pt-4 pb-[env(safe-area-inset-bottom)]">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-1.5 h-2.5 zari-band text-gold-500/35"

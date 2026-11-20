@@ -8,7 +8,6 @@ import { event } from "@/content/event";
 import { guru } from "@/content/teachers";
 import { formatDate, formatTime } from "@/lib/date";
 import { Motes } from "./Motes";
-import { Parallax } from "./Parallax";
 import "./cover.css";
 
 // Laid out like a magazine cover. The title sits behind her: her photo
@@ -20,7 +19,7 @@ import "./cover.css";
 // title, her photo, a few soft out-of-focus motes, then the details.
 export function CoverPage() {
   return (
-    <Parallax className="relative isolate mx-auto flex h-full flex-col text-center lg:max-w-[160cqh]">
+    <div className="relative isolate mx-auto flex h-full flex-col text-center lg:max-w-[160cqh]">
       <Motes count={26} className="-z-10" />
 
       <header className="cover-near">
@@ -46,7 +45,7 @@ export function CoverPage() {
       <div className="relative -mt-[6.5cqw] min-h-0 flex-1 lg:-mt-[min(5.25cqw,10cqh)]">
         <div aria-hidden="true" className="cover-aura absolute inset-0 -z-10">
           <div className="cover-glow absolute top-[34%] left-1/2 aspect-square h-[130%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_190_110/0.3),rgb(201_162_77/0.08)_55%,transparent)]" />
-          <div className="cover-rays absolute top-[34%] left-[46%] aspect-square h-[105%] -translate-x-1/2 -translate-y-1/2 rounded-full lg:left-[48.5%]" />
+          <div className="cover-rays absolute top-[34%] left-[46%] aspect-square h-[78%] -translate-x-1/2 -translate-y-1/2 rounded-full lg:left-[48.5%]" />
           <Halo className="cover-halo absolute top-[34%] left-[46%] h-[78%] -translate-x-1/2 -translate-y-1/2 lg:left-[48.5%]" />
         </div>
 
@@ -93,6 +92,6 @@ export function CoverPage() {
           className="mt-4 flex flex-col items-center lg:mt-0 lg:items-end"
         />
       </div>
-    </Parallax>
+    </div>
   );
 }

@@ -3,22 +3,18 @@ html:has(.book) {
   overscroll-behavior: none;
 }
 
-/* Pages take the top four fifths of the screen; the dock takes the rest. */
+/* Pages take the screen; the dock below holds only the controls. Its height
+   is fixed, so a page name that wraps onto two lines doesn't resize the
+   pages above it. */
 .book {
   position: fixed;
   inset: 0;
   display: grid;
-  grid-template-rows: 1fr minmax(7rem, 20%);
+  grid-template-rows: 1fr calc(5.75rem + env(safe-area-inset-bottom));
   /* Without this the column grows to fit a long page name in the dock and
      pushes the right edge of everything off screen. */
   grid-template-columns: minmax(0, 1fr);
   background: var(--maroon-950);
-}
-
-@media (width >= 64rem) {
-  .book {
-    grid-template-rows: 1fr 7.5rem;
-  }
 }
 
 /* A wide perspective keeps the turning page from ballooning towards the

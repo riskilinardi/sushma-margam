@@ -6,6 +6,7 @@
   animation: cover-candle 4.5s ease-in-out infinite;
 }
 
+/* The rays stay inside the halo, so outside it there is only the silk. */
 .cover-rays {
   background: repeating-conic-gradient(
     rgb(255 214 150 / 0.13) 0deg 0.5deg,
@@ -13,10 +14,10 @@
   );
   mask-image: radial-gradient(
     closest-side,
-    transparent 20%,
-    #000 42%,
-    rgb(0 0 0 / 0.4) 70%,
-    transparent 100%
+    transparent 22%,
+    #000 45%,
+    rgb(0 0 0 / 0.45) 78%,
+    transparent 97%
   );
   animation: cover-turn 360s linear infinite;
 }
@@ -32,12 +33,12 @@
     mask-image:
       radial-gradient(
         closest-side,
-        transparent 20%,
-        #000 42%,
-        rgb(0 0 0 / 0.4) 70%,
-        transparent 100%
+        transparent 22%,
+        #000 45%,
+        rgb(0 0 0 / 0.45) 78%,
+        transparent 97%
       ),
-      linear-gradient(#000 45%, transparent 80%);
+      linear-gradient(#000 50%, transparent 82%);
     mask-composite: intersect;
   }
 }
@@ -108,29 +109,17 @@
 }
 
 /* The poster breathes: the halo swells a little and the title and her
-   figure drift against each other, slowly enough to feel rather than see.
-   With a mouse, the layers also shift with it, nearer ones more. */
-.cover-aura,
-.cover-near,
-.cover-stage {
-  translate: calc(var(--px, 0) * var(--depth) * -1px)
-    calc(var(--py, 0) * var(--depth) * -0.6px);
-  transition: translate 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
+   figure drift against each other, slowly enough to feel rather than see. */
 .cover-aura {
-  --depth: 4;
   transform-origin: 46% 34%;
   animation: cover-breathe 9s ease-in-out infinite alternate;
 }
 
 .cover-near {
-  --depth: 8;
   animation: cover-float 13s ease-in-out infinite alternate;
 }
 
 .cover-stage {
-  --depth: 14;
   transform-origin: 50% 100%;
   animation: cover-rise 11s ease-in-out infinite alternate;
 }
@@ -165,7 +154,19 @@
 }
 
 .leaf[data-settle="play"] .cover-halo {
-  animation: cover-bloom 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: cover-fade 0.8s ease-out both;
+}
+
+/* The halo's ring of dots is lit like lamps at an aarti: one after another,
+   clockwise from the top, each flaring as it catches. */
+.leaf[data-settle="pending"] .halo-dot {
+  opacity: 0;
+}
+
+.leaf[data-settle="play"] .halo-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: halo-dot 0.7s ease-out calc(var(--n) * 12ms + 0.45s) both;
 }
 
 .leaf[data-settle="play"] .cover-rays {
@@ -232,11 +233,16 @@
   }
 }
 
-@keyframes cover-bloom {
+@keyframes halo-dot {
   from {
     opacity: 0;
-    scale: 0.82;
-    rotate: -25deg;
+    scale: 2.8;
+    fill: #fff3d0;
+  }
+  25% {
+    opacity: 1;
+    scale: 2.2;
+    fill: #ffe2a8;
   }
 }
 
@@ -280,11 +286,5 @@
   .cover-near,
   .cover-stage {
     animation: none !important;
-  }
-
-  .cover-aura,
-  .cover-near,
-  .cover-stage {
-    translate: none;
   }
 }

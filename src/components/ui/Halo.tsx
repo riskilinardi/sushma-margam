@@ -1,5 +1,18 @@
-// A thin halo of light, like the prabha behind a temple deity. The dotted
-// ring turns very slowly.
+import type { CSSProperties } from "react";
+
+// The dotted ring, starting at the top and going clockwise, so its dots
+// can be lit one after another like a row of lamps (see cover.css).
+const DOTS = 120;
+const dots = Array.from({ length: DOTS }, (_, i) => {
+  const angle = ((i / DOTS) * 2 - 0.5) * Math.PI;
+  return {
+    x: (86 * Math.cos(angle)).toFixed(2),
+    y: (86 * Math.sin(angle)).toFixed(2),
+  };
+});
+
+// A thin halo of light, like the prabha behind a temple deity. The ring of
+// dots turns very slowly.
 export function Halo({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -11,14 +24,23 @@ export function Halo({ className = "" }: { className?: string }) {
     >
       <circle r="96" strokeWidth="0.6" opacity="0.5" />
       <circle r="92" strokeWidth="0.25" opacity="0.4" />
-      <circle
-        r="86"
-        strokeWidth="1.4"
-        strokeDasharray="0.1 4.5"
-        strokeLinecap="round"
+      <g
+        fill="currentColor"
+        stroke="none"
         opacity="0.6"
         className="origin-center animate-[spin_240s_linear_infinite] [transform-box:fill-box] motion-reduce:animate-none"
-      />
+      >
+        {dots.map(({ x, y }, i) => (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r="0.75"
+            className="halo-dot"
+            style={{ "--n": i } as CSSProperties}
+          />
+        ))}
+      </g>
     </svg>
   );
 }
