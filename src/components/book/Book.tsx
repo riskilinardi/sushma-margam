@@ -48,12 +48,17 @@ export function useBook() {
   return use(BookContext)!;
 }
 
-const NearbyContext = createContext(false);
+const PageContext = createContext({ nearby: false, current: false });
 
 // True while the reader is on this page or next to it, so pages can load
 // their data just before they're reached and stop listening once left.
 export function useIsNearby() {
-  return use(NearbyContext);
+  return use(PageContext).nearby;
+}
+
+// True only while this is the page being read, for things that animate.
+export function useIsCurrent() {
+  return use(PageContext).current;
 }
 
 const fade: Reveal = ({ incoming }) =>
@@ -339,13 +344,18 @@ export function Book({ pages, moments = {} }: BookProps) {
             >
               <div className="leaf-front">
                 <PageFrame />
-                <NearbyContext value={opened && Math.abs(i - index) <= 1}>
+                <PageContext
+                  value={{
+                    nearby: opened && Math.abs(i - index) <= 1,
+                    current: opened && i === index,
+                  }}
+                >
                   {page.fill ? (
                     <div className={pageBox}>{page.content}</div>
                   ) : (
                     <Fit>{page.content}</Fit>
                   )}
-                </NearbyContext>
+                </PageContext>
                 <div data-overlay="shadow" />
                 <div data-overlay="shade" />
                 <div data-overlay="sheen" />

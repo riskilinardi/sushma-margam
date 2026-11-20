@@ -1,0 +1,116 @@
+/* The cover is lit by the lamp the reader has just lit: a warm glow that
+   breathes like a flame, fine rays behind her like a deity's prabhavali,
+   and a title in polished gold leaf. */
+
+.cover-glow {
+  animation: cover-candle 4.5s ease-in-out infinite;
+}
+
+.cover-rays {
+  background: repeating-conic-gradient(
+    rgb(255 214 150 / 0.13) 0deg 0.5deg,
+    transparent 0.5deg 6deg
+  );
+  mask-image: radial-gradient(
+    closest-side,
+    transparent 20%,
+    #000 42%,
+    rgb(0 0 0 / 0.4) 70%,
+    transparent 100%
+  );
+  animation: cover-turn 360s linear infinite;
+}
+
+.cover-title {
+  --gilded: linear-gradient(
+    180deg,
+    #fbefc8 0%,
+    #e9cd86 30%,
+    #b98a35 52%,
+    #f3dc9d 66%,
+    #8a6526 100%
+  );
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.5))
+    drop-shadow(0 0 22px rgb(255 190 110 / 0.2));
+}
+
+/* The reveal, played when the cover settles after the lamp: the light finds
+   the title on an empty stage, the halo blooms open, the rays appear, she
+   comes into focus, and then the details. */
+.leaf[data-settle="pending"] .cover-halo,
+.leaf[data-settle="pending"] .cover-rays,
+.leaf[data-settle="pending"] .cover-figure {
+  opacity: 0;
+}
+
+.leaf[data-settle="play"] .cover-halo {
+  animation: cover-bloom 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.leaf[data-settle="play"] .cover-rays {
+  animation:
+    cover-fade 2.4s ease-out 0.3s both,
+    cover-turn 360s linear infinite;
+}
+
+.leaf[data-settle="play"] .cover-figure {
+  animation: cover-focus 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s both;
+}
+
+/* One selector stronger than the settle rule in book.css, which the stylesheets
+   load in no fixed order. */
+.leaf[data-settle="play"] .leaf-front .cover-details[data-settle] {
+  animation-delay: 1s;
+}
+
+@keyframes cover-candle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.84;
+  }
+  55% {
+    opacity: 0.97;
+  }
+  75% {
+    opacity: 0.88;
+  }
+}
+
+@keyframes cover-turn {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes cover-bloom {
+  from {
+    opacity: 0;
+    scale: 0.82;
+    rotate: -25deg;
+  }
+}
+
+@keyframes cover-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes cover-focus {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+    scale: 1.04;
+    translate: 0 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover-glow,
+  .cover-rays {
+    animation: none !important;
+  }
+}
