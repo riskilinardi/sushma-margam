@@ -218,23 +218,34 @@ export function Book({ pages, moments = {} }: BookProps) {
   }
 
   // Lighting the lamp: the flames catch, then their light fills the screen
-  // and gathers into her halo on the cover. This runs inside the tap, which
-  // is what allows the sound to start.
+  // and gathers into her halo on the cover. A guest who lit it earlier in
+  // the evening opens the book where they left it instead, since phones
+  // often reload a page left in the background. This runs inside the tap,
+  // which is what allows the sound to start.
   async function light(flames: Point) {
+    const to = Math.max(
+      0,
+      pages.findIndex((page) => page.name === visit?.page),
+    );
+    const page = leaves.current[to];
     setLit(true);
-    remember({ litAt: Date.now(), page: pages[0].name });
+    remember({ litAt: Date.now(), page: pages[to].name });
     if (sound) playLampLighting(LAMP_CATCHES / 1000);
-    const cover = leaves.current[0];
+    if (to > 0) {
+      current.current = to;
+      setIndex(to);
+      setTurned(true);
+    }
 
     if (reducedMotion()) {
       await wait(600);
       await fadeOut(lamp.current!);
       flushSync(() => setOpened(true));
-      settleIn(cover);
+      settleIn(page);
       return;
     }
 
-    holdBack(cover);
+    holdBack(page);
     book.current!.dataset.arriving = "";
     await wait(LAMP_CATCHES);
     await lampLight({
@@ -242,9 +253,9 @@ export function Book({ pages, moments = {} }: BookProps) {
       book: book.current!,
       layer: screenLayer.current!,
       flames,
-      halo: haloOn(cover) ?? { centre: flames, radius: 0 },
+      halo: haloOn(page) ?? { centre: pageCentre(), radius: 0 },
       onFull: () => {
-        settleIn(cover);
+        settleIn(page);
         wait(COVER_ARRIVES).then(() => delete book.current!.dataset.arriving);
       },
     });
@@ -256,35 +267,6 @@ export function Book({ pages, moments = {} }: BookProps) {
     setSoundChoice(!sound);
     remember({ muted: sound });
   }
-
-  // A guest who lit the lamp earlier in the evening is taken back to the
-  // page they were on: the lamp lights itself, then fades to that page.
-  useEffect(() => {
-    const to = pages.findIndex((page) => page.name === visit?.page);
-    if (to < 0) return;
-    let cancelled = false;
-
-    (async () => {
-      await wait(200);
-      if (cancelled) return;
-      const leaf = leaves.current[to];
-      holdBack(leaf);
-      current.current = to;
-      setIndex(to);
-      setTurned(true);
-      setLit(true);
-
-      await wait(700);
-      if (cancelled) return;
-      await fadeOut(lamp.current!);
-      setOpened(true);
-      settleIn(leaf);
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [visit, pages]);
 
   const api: BookApi = {
     goTo(name) {

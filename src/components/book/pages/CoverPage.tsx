@@ -15,6 +15,11 @@ import "./cover.css";
 // her head tucks into the letters by the same amount on every screen. Her
 // lower half fades into the page beneath the details.
 //
+// Everything hangs on one line down the middle: her photo is shifted so the
+// line through her head and pendant is centred (see .cover-light), which
+// puts her head between MAR and GAM, and the glow, rays and halo are
+// centred on her chest.
+//
 // Back to front: drifting motes, the lamp's glow with the rays and halo, the
 // title, her photo, a few soft out-of-focus motes, then the details.
 export function CoverPage() {
@@ -44,9 +49,9 @@ export function CoverPage() {
 
       <div className="relative -mt-[6.5cqw] min-h-0 flex-1 lg:-mt-[min(5.25cqw,10cqh)]">
         <div aria-hidden="true" className="cover-aura absolute inset-0 -z-10">
-          <div className="cover-glow absolute top-[34%] left-1/2 aspect-square h-[130%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_190_110/0.3),rgb(201_162_77/0.08)_55%,transparent)]" />
-          <div className="cover-rays absolute top-[34%] left-[46%] aspect-square h-[78%] -translate-x-1/2 -translate-y-1/2 rounded-full lg:left-[48.5%]" />
-          <Halo className="cover-halo absolute top-[34%] left-[46%] h-[78%] -translate-x-1/2 -translate-y-1/2 lg:left-[48.5%]" />
+          <div className="cover-glow absolute top-[33%] left-1/2 aspect-square h-[130%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_190_110/0.3),rgb(201_162_77/0.08)_55%,transparent)]" />
+          <div className="cover-rays absolute top-[33%] left-1/2 aspect-square h-[66%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+          <Halo className="cover-halo absolute top-[33%] left-1/2 h-[66%] -translate-x-1/2 -translate-y-1/2" />
         </div>
 
         <div className="cover-stage absolute inset-0 z-10 flex justify-center">

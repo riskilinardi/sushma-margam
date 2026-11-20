@@ -1,7 +1,8 @@
 // What a guest's browser remembers through the evening: when they lit the
 // lamp, the page they were on and whether they turned the sound off. Phones
 // often reload a page left in the background, and nobody should have to
-// light the lamp and find their place again after taking a photo.
+// find their place again after taking a photo: the lamp, once lit again,
+// opens the book where they left it.
 
 const KEY = "margam-visit";
 

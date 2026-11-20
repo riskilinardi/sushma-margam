@@ -81,8 +81,11 @@
 }
 
 /* Her figure, lit from behind by the halo: a thin warm edge of light, then
-   the wider glow. */
+   the wider glow. Her outstretched arm makes the photo wider on one side:
+   the line through her head and pendant runs 43% of the way across, so the
+   photo moves 7% of its width to bring that line to the centre. */
 .cover-light {
+  translate: 7% 0;
   filter: drop-shadow(0 -1px 1.5px rgb(255 224 176 / 0.7))
     drop-shadow(0 0 24px rgb(255 190 110 / 0.3));
 }
@@ -111,7 +114,7 @@
 /* The poster breathes: the halo swells a little and the title and her
    figure drift against each other, slowly enough to feel rather than see. */
 .cover-aura {
-  transform-origin: 46% 34%;
+  transform-origin: 50% 33%;
   animation: cover-breathe 9s ease-in-out infinite alternate;
 }
 
@@ -122,12 +125,6 @@
 .cover-stage {
   transform-origin: 50% 100%;
   animation: cover-rise 11s ease-in-out infinite alternate;
-}
-
-@media (width >= 64rem) {
-  .cover-aura {
-    transform-origin: 48.5% 34%;
-  }
 }
 
 /* The reveal, played when the cover settles after the lamp: the light
