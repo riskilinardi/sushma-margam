@@ -22,8 +22,12 @@ import { clamp, play, resetLeaf, type Point, type Reveal } from "./fx/shared";
 import { silkTurn, type SilkTurn } from "./fx/silk";
 import { LampIntro } from "./LampIntro";
 import { holdBack, release, settleIn } from "./settle";
-import { playLampLighting, setMuted } from "./sound";
-import { lastVisit, remember } from "./visit";
+import {
+  playLampLighting,
+  rememberSound,
+  setMuted,
+  soundWasOff,
+} from "./sound";
 import "./book.css";
 
 export type Effect = "silk" | "fan" | "ring" | "her" | "fade";
@@ -130,11 +134,10 @@ export function Book({ pages, moments = {} }: BookProps) {
   const [opened, setOpened] = useState(false);
   const [lit, setLit] = useState(false);
   const [index, setIndex] = useState(0);
-  // How the guest arrived: null while the page is first drawn on the
-  // server, then whatever their browser remembers.
-  const visit = useSyncExternalStore(noChanges, lastVisit, () => null);
+  // Sound starts on unless the guest turned it off before a reload.
+  const soundOff = useSyncExternalStore(noChanges, soundWasOff, () => false);
   const [soundChoice, setSoundChoice] = useState<boolean>();
-  const sound = soundChoice ?? !visit?.muted;
+  const sound = soundChoice ?? !soundOff;
   const [jump, setJump] = useState<{ from: number; to: number } | null>(null);
   // Whether the reader has turned a page yet; until then the cover's corner
   // lifts now and then to show that it turns.
@@ -177,7 +180,6 @@ export function Book({ pages, moments = {} }: BookProps) {
     current.current = to;
     involved.forEach(resetLeaf);
     settleIn(leaves.current[to]);
-    remember({ page: pages[to].name });
     busy.current = false;
   }
 
@@ -218,34 +220,22 @@ export function Book({ pages, moments = {} }: BookProps) {
   }
 
   // Lighting the lamp: the flames catch, then their light fills the screen
-  // and gathers into her halo on the cover. A guest who lit it earlier in
-  // the evening opens the book where they left it instead, since phones
-  // often reload a page left in the background. This runs inside the tap,
-  // which is what allows the sound to start.
+  // and gathers into her halo on the cover. This runs inside the tap, which
+  // is what allows the sound to start.
   async function light(flames: Point) {
-    const to = Math.max(
-      0,
-      pages.findIndex((page) => page.name === visit?.page),
-    );
-    const page = leaves.current[to];
     setLit(true);
-    remember({ litAt: Date.now(), page: pages[to].name });
     if (sound) playLampLighting(LAMP_CATCHES / 1000);
-    if (to > 0) {
-      current.current = to;
-      setIndex(to);
-      setTurned(true);
-    }
+    const cover = leaves.current[0];
 
     if (reducedMotion()) {
       await wait(600);
       await fadeOut(lamp.current!);
       flushSync(() => setOpened(true));
-      settleIn(page);
+      settleIn(cover);
       return;
     }
 
-    holdBack(page);
+    holdBack(cover);
     book.current!.dataset.arriving = "";
     await wait(LAMP_CATCHES);
     await lampLight({
@@ -253,9 +243,9 @@ export function Book({ pages, moments = {} }: BookProps) {
       book: book.current!,
       layer: screenLayer.current!,
       flames,
-      halo: haloOn(page) ?? { centre: pageCentre(), radius: 0 },
+      halo: haloOn(cover) ?? { centre: pageCentre(), radius: 0 },
       onFull: () => {
-        settleIn(page);
+        settleIn(cover);
         wait(COVER_ARRIVES).then(() => delete book.current!.dataset.arriving);
       },
     });
@@ -265,7 +255,7 @@ export function Book({ pages, moments = {} }: BookProps) {
   function toggleSound() {
     setMuted(sound);
     setSoundChoice(!sound);
-    remember({ muted: sound });
+    rememberSound(!sound);
   }
 
   const api: BookApi = {

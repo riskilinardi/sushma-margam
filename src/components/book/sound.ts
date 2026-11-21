@@ -31,6 +31,25 @@ function getMixer(): Mixer {
   return mixer;
 }
 
+// A guest who turns the sound off keeps it off if the page reloads. Storage
+// can be refused (private browsing); the sound then simply starts on.
+const SOUND_OFF = "margam-sound-off";
+
+export function soundWasOff() {
+  try {
+    return localStorage.getItem(SOUND_OFF) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function rememberSound(on: boolean) {
+  try {
+    if (on) localStorage.removeItem(SOUND_OFF);
+    else localStorage.setItem(SOUND_OFF, "1");
+  } catch {}
+}
+
 export function setMuted(muted: boolean) {
   if (!mixer) return;
   mixer.output.gain.setTargetAtTime(
