@@ -6,9 +6,10 @@
   --maroon-800: #4a1016;
   --maroon-700: #7a1c22;
 
-  --gold-200: #f1dda3;
-  --gold-500: #c9a24d;
-  --gold-700: #8a6526;
+  /* An antique, burnished gold rather than a bright brassy one. */
+  --gold-200: #e3c78b;
+  --gold-500: #b08a3e;
+  --gold-700: #75531f;
   --gold-900: #4f3812;
 
   --ivory: #f4ead8;

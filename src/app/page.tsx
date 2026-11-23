@@ -19,6 +19,7 @@ const pages: BookPage[] = [
   ...programme.map((item, index) => ({
     name: item.name,
     content: <ItemPage item={item} number={index + 1} />,
+    fill: true,
     under: "Programme",
   })),
   { name: "Gallery", content: <GalleryPage />, fill: true },

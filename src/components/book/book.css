@@ -221,7 +221,7 @@ html:has(.book) {
   overscroll-behavior: contain;
   touch-action: pan-y;
   scrollbar-width: thin;
-  scrollbar-color: rgb(201 162 77 / 0.45) transparent;
+  scrollbar-color: rgb(176 138 62 / 0.5) transparent;
   mask-image: linear-gradient(
     transparent,
     #000 1.25rem,
@@ -353,7 +353,7 @@ html:has(.book) {
     #a8664a,
     #6e2a2a 32%,
     var(--maroon-800) 47%,
-    rgb(201 162 77 / 0.8) 48.5% 50%,
+    rgb(176 138 62 / 0.85) 48.5% 50%,
     var(--maroon-950) 50%
   );
   filter: drop-shadow(-3px -3px 5px rgb(0 0 0 / 0.5));

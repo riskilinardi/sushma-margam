@@ -9,7 +9,7 @@
 /* The rays stay inside the halo, so outside it there is only the silk. */
 .cover-rays {
   background: repeating-conic-gradient(
-    rgb(255 214 150 / 0.13) 0deg 0.5deg,
+    rgb(255 214 150 / 0.08) 0deg 0.5deg,
     transparent 0.5deg 6deg
   );
   mask-image: radial-gradient(
@@ -46,11 +46,11 @@
 .cover-title {
   --gilded: linear-gradient(
     180deg,
-    #fbefc8 0%,
-    #e9cd86 30%,
-    #b98a35 52%,
-    #f3dc9d 66%,
-    #8a6526 100%
+    #ecd8a2 0%,
+    #d2ad62 30%,
+    #9a722e 52%,
+    #d8bb79 66%,
+    #6c4c1b 100%
   );
   filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.5))
     drop-shadow(0 0 22px rgb(255 190 110 / 0.2));
@@ -80,19 +80,18 @@
   color: transparent;
 }
 
-/* Her figure, lit from behind by the halo: a thin warm edge of light, then
-   the wider glow. Her outstretched arm makes the photo wider on one side:
-   the line through her head and pendant runs 43% of the way across, so the
-   photo moves 7% of its width to bring that line to the centre. */
+/* Her figure, with only a soft glow from the halo behind her: Sushma
+   prefers to be lit gently. Her outstretched arm makes the photo wider on
+   one side: the line through her head and pendant runs 43% of the way
+   across, so the photo moves 7% of its width to bring that line to the
+   centre. */
 .cover-light {
   translate: 7% 0;
-  filter: drop-shadow(0 -1px 1.5px rgb(255 224 176 / 0.7))
-    drop-shadow(0 0 24px rgb(255 190 110 / 0.3));
+  filter: drop-shadow(0 0 20px rgb(255 190 110 / 0.12));
 }
 
-/* Warmed a touch, so the studio photo sits in the lamplight. */
 .cover-light img {
-  filter: sepia(0.06) saturate(1.05) contrast(1.04);
+  filter: saturate(1.02) contrast(1.04) brightness(0.95);
 }
 
 /* Gold brocade woven into the cover's silk, faint, and only towards the

@@ -5,9 +5,6 @@
 }
 
 .print-sheet {
-  /* Gold a shade deeper, so it holds up on white paper. */
-  --gold-500: #b08a3e;
-
   width: 210mm;
   height: 297mm;
   print-color-adjust: exact;

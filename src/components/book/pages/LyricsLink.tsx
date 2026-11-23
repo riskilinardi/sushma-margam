@@ -8,8 +8,7 @@ type LyricsLinkProps = {
   opening: string;
 };
 
-// Styled like a pull-quote in a printed programme: the song's opening words
-// between two gold rules, then a quiet invitation to read the rest.
+// The song's opening words, then a quiet invitation to read the rest.
 export function LyricsLink({ slug, opening }: LyricsLinkProps) {
   const { goTo } = useBook();
 
@@ -23,10 +22,10 @@ export function LyricsLink({ slug, opening }: LyricsLinkProps) {
       type="button"
       data-settle
       onClick={open}
-      className="group mx-auto mt-6 block w-full max-w-xs border-y border-gold-500/30 py-3"
+      className="group mt-4 ml-3.5 block text-left"
     >
-      <span className="block text-ivory/80 italic">“{opening}…”</span>
-      <span className="mt-1.5 inline-flex items-center gap-2 font-display text-[0.65rem] tracking-[0.3em] text-gold-200 uppercase">
+      <span className="block text-ivory/75 italic">“{opening}…”</span>
+      <span className="mt-1 inline-flex items-center gap-2 font-display text-[0.62rem] tracking-[0.3em] text-gold-200 uppercase">
         Read the lyrics
         <svg
           viewBox="0 0 16 16"

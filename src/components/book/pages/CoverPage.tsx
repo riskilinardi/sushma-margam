@@ -49,7 +49,7 @@ export function CoverPage() {
 
       <div className="relative -mt-[6.5cqw] min-h-0 flex-1 lg:-mt-[min(5.25cqw,10cqh)]">
         <div aria-hidden="true" className="cover-aura absolute inset-0 -z-10">
-          <div className="cover-glow absolute top-[33%] left-1/2 aspect-square h-[130%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_190_110/0.3),rgb(201_162_77/0.08)_55%,transparent)]" />
+          <div className="cover-glow absolute top-[33%] left-1/2 aspect-square h-[130%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_190_110/0.15),rgb(176_138_62/0.04)_55%,transparent)]" />
           <div className="cover-rays absolute top-[33%] left-1/2 aspect-square h-[66%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
           <Halo className="cover-halo absolute top-[33%] left-1/2 h-[66%] -translate-x-1/2 -translate-y-1/2" />
         </div>

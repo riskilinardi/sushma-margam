@@ -11,11 +11,11 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/jpeg";
 
 const maroon = "#1a0507";
-const gold = "#c9a24d";
-const lightGold = "#f1dda3";
+const gold = "#b08a3e";
+const lightGold = "#e3c78b";
 const gildedText = {
   backgroundImage:
-    "linear-gradient(180deg, #fbefc8 0%, #e9cd86 30%, #b98a35 52%, #f3dc9d 66%, #8a6526 100%)",
+    "linear-gradient(180deg, #ecd8a2 0%, #d2ad62 30%, #9a722e 52%, #d8bb79 66%, #6c4c1b 100%)",
   backgroundClip: "text",
   color: "transparent",
 };
