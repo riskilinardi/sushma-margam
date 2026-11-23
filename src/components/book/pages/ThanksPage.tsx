@@ -31,7 +31,7 @@ export function ThanksPage() {
         ))}
       </dl>
 
-      <div className="relative mx-auto mt-6">
+      <div className="relative mx-auto mt-6 w-fit">
         <div
           aria-hidden="true"
           className="absolute top-[28%] left-1/2 size-44 -translate-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_190_110/0.22),transparent)]"

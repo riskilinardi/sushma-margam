@@ -15,6 +15,7 @@ import { Ornament } from "@/components/ui/Ornament";
 import { Dock } from "./Dock";
 import { Fit, pageBox } from "./Fit";
 import { fan } from "./fx/fan";
+import { dim } from "./fx/dim";
 import { her } from "./fx/her";
 import { lampLight } from "./fx/lamplight";
 import { ring } from "./fx/ring";
@@ -30,7 +31,7 @@ import {
 } from "./sound";
 import "./book.css";
 
-export type Effect = "silk" | "fan" | "ring" | "her" | "fade";
+export type Effect = "silk" | "fan" | "ring" | "her" | "dim" | "fade";
 
 export type BookPage = {
   name: string;
@@ -40,6 +41,9 @@ export type BookPage = {
   fill?: boolean;
   // The page it sits under in the contents, e.g. each piece under Programme.
   under?: string;
+  // A page on a black ground, like the pieces. Turning between a dark page
+  // and a light one passes through darkness instead of a page turn.
+  dark?: boolean;
 };
 
 type BookApi = {
@@ -76,6 +80,7 @@ const reveals: Record<Exclude<Effect, "silk">, Reveal> = {
   fan,
   ring,
   her,
+  dim,
   fade,
 };
 
@@ -155,8 +160,10 @@ export function Book({ pages, moments = {} }: BookProps) {
 
   function effectFor(from: number, to: number): Effect {
     if (reducedMotion()) return "fade";
-    const [a, b] = [pages[from].name, pages[to].name];
-    return moments[`${a}>${b}`] ?? moments[`*>${b}`] ?? "silk";
+    const [a, b] = [pages[from], pages[to]];
+    const moment = moments[`${a.name}>${b.name}`] ?? moments[`*>${b.name}`];
+    if (moment) return moment;
+    return Boolean(a.dark) === Boolean(b.dark) ? "silk" : "dim";
   }
 
   function pageCentre(): Point {

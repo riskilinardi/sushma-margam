@@ -20,6 +20,7 @@ const pages: BookPage[] = [
     name: item.name,
     content: <ItemPage item={item} number={index + 1} />,
     fill: true,
+    dark: true,
     under: "Programme",
   })),
   { name: "Gallery", content: <GalleryPage />, fill: true },

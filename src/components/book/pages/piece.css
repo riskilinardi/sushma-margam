@@ -61,14 +61,18 @@
   mask-image: linear-gradient(#000 calc(100% - 2.5rem), transparent);
 }
 
-/* The stage lights come up as the page arrives. */
-.leaf[data-settle="pending"] .piece-photo,
+/* The stage lights come up as the page arrives. While it turns she is
+   already there, only dim, so the page is never blank. */
+.leaf[data-settle="pending"] .piece-photo {
+  filter: brightness(0.3);
+}
+
 .leaf[data-settle="pending"] .piece-light {
   opacity: 0;
 }
 
 .leaf[data-settle="play"] .piece-photo {
-  animation: piece-lights 1.6s ease-out both;
+  animation: piece-lights 1.4s ease-out both;
 }
 
 .leaf[data-settle="play"] .piece-light {
@@ -77,11 +81,7 @@
 
 @keyframes piece-lights {
   from {
-    opacity: 0;
-    filter: brightness(0.4);
-  }
-  40% {
-    opacity: 1;
+    filter: brightness(0.3);
   }
 }
 

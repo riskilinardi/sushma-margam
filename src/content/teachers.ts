@@ -7,6 +7,6 @@ export type Teacher = {
 export const guru: Teacher = { name: "Sri Neewin Hershall" };
 
 export const formerTeachers: Teacher[] = [
-  { name: "Malini Bhaskar" },
   { name: "M. Dhana Bharathi" },
+  { name: "Malini Bhaskar" },
 ];

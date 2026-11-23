@@ -17,7 +17,7 @@ export function ProgrammePage() {
 
       <ol
         data-thread
-        className="relative mt-4 space-y-1 before:absolute before:inset-y-3 before:left-[4.5px] before:w-px before:origin-top before:bg-gold-500/40"
+        className="relative mt-4 ml-1 space-y-1 before:absolute before:inset-y-3 before:left-[4.5px] before:w-px before:origin-top before:bg-gold-500/40"
       >
         {programme.map((item, index) => (
           <li key={item.slug} data-settle>
