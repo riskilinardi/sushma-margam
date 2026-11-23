@@ -61,18 +61,15 @@
   mask-image: linear-gradient(#000 calc(100% - 2.5rem), transparent);
 }
 
-/* The stage lights come up as the page arrives. While it turns she is
-   already there, only dim, so the page is never blank. */
-.leaf[data-settle="pending"] .piece-photo {
-  filter: brightness(0.3);
-}
-
+/* The stage lights come up as the page arrives: she comes in first, out of
+   the dark, then the words rise in after her. */
+.leaf[data-settle="pending"] .piece-photo,
 .leaf[data-settle="pending"] .piece-light {
   opacity: 0;
 }
 
 .leaf[data-settle="play"] .piece-photo {
-  animation: piece-lights 1.4s ease-out both;
+  animation: piece-lights 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 .leaf[data-settle="play"] .piece-light {
@@ -81,7 +78,12 @@
 
 @keyframes piece-lights {
   from {
-    filter: brightness(0.3);
+    opacity: 0;
+    scale: 1.04;
+    filter: brightness(0.4);
+  }
+  45% {
+    opacity: 1;
   }
 }
 
