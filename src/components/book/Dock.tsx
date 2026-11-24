@@ -27,12 +27,19 @@ export function Dock({
 }: DockProps) {
   const [contentsOpen, setContentsOpen] = useState(false);
   const openContents = () => setContentsOpen(true);
+  const progress = (current / (pages.length - 1)) * 100;
 
   return (
     <footer className="dock relative flex flex-col items-center justify-center border-t border-gold-500/30 bg-maroon-950 px-4 pt-4 pb-[env(safe-area-inset-bottom)]">
+      {/* The woven band brightens to gold as far as the reader has come. */}
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-1.5 h-2.5 zari-band text-gold-500/35"
+      />
+      <div
+        aria-hidden="true"
+        className="dock-progress absolute inset-x-0 top-1.5 h-2.5 zari-band text-gold-500"
+        style={{ clipPath: `inset(0 ${100 - progress}% 0 0)` }}
       />
 
       <div className="flex w-full max-w-md items-center gap-3">

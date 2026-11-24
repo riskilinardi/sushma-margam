@@ -1,0 +1,31 @@
+.wish-lamp {
+  fill: #ffe7b0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* While the page turns the arch waits unlit; then the lamps catch in turn,
+   each flaring as it does, like the ring of lamps on the cover. */
+.leaf[data-settle="pending"] .wish-lamp {
+  opacity: 0;
+}
+
+.leaf[data-settle="play"] .wish-lamp {
+  animation: wish-catch 0.8s ease-out calc(var(--k) * 22ms + 0.5s) both;
+}
+
+.leaf[data-settle="play"] .wish-lamp[data-live] {
+  animation-delay: 0s;
+}
+
+@keyframes wish-catch {
+  from {
+    opacity: 0;
+    scale: 3;
+    fill: #fff8e6;
+  }
+  25% {
+    opacity: 1;
+    scale: 2.2;
+  }
+}

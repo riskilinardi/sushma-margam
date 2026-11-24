@@ -1,0 +1,85 @@
+/* The petals fall the whole height of the page, measured in its own cqh. */
+.petals {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  container-type: size;
+}
+
+.petal {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+}
+
+.petal-sway,
+.petal-leaf {
+  display: block;
+}
+
+/* Each falls once, swaying side to side and turning over as it goes. */
+.leaf[data-settle="play"] .petal {
+  animation: petal-fall var(--fall) linear calc(var(--delay) + 0.3s) both;
+}
+
+.leaf[data-settle="play"] .petal-sway {
+  animation: petal-sway 1.7s ease-in-out 6 alternate;
+}
+
+.leaf[data-settle="play"] .petal-leaf {
+  animation: petal-tumble 2.6s linear 4;
+}
+
+.petal-jasmine {
+  width: calc(var(--size) * 0.45rem);
+  height: calc(var(--size) * 0.8rem);
+  border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+  background: linear-gradient(160deg, #fffaf0, #efe3c9 65%, #cdb88c);
+}
+
+.petal-marigold {
+  width: calc(var(--size) * 0.6rem);
+  height: calc(var(--size) * 0.6rem);
+  border-radius: 45% 55% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 40% 30%, #ffc45c, #e5891f 70%, #c2650f);
+}
+
+.petal-rose {
+  width: calc(var(--size) * 0.6rem);
+  height: calc(var(--size) * 0.7rem);
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  background: radial-gradient(circle at 50% 30%, #f0a0ad, #c2526a 75%);
+}
+
+@keyframes petal-fall {
+  from {
+    translate: 0 -2rem;
+    opacity: 0;
+  }
+  8%,
+  80% {
+    opacity: 0.9;
+  }
+  to {
+    translate: 0 100cqh;
+    opacity: 0;
+  }
+}
+
+@keyframes petal-sway {
+  from {
+    translate: -0.9rem 0;
+    rotate: -20deg;
+  }
+  to {
+    translate: 0.9rem 0;
+    rotate: 20deg;
+  }
+}
+
+@keyframes petal-tumble {
+  to {
+    transform: rotate3d(1, 0.35, 0.2, 360deg);
+  }
+}

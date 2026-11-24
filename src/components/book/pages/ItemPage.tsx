@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { Emblem } from "@/components/ui/Emblem";
 import type { ProgrammeItem } from "@/content/programme";
 import { LyricsLink } from "./LyricsLink";
 import { Motes } from "./Motes";
@@ -13,9 +14,9 @@ type ItemPageProps = {
 };
 
 // One page for each piece: her photo on its own black studio background,
-// lit from above like a stage, with what the piece is and what to watch for
-// beneath it. Longer write-ups scroll; the heading always starts in the
-// same place.
+// lit from above like a stage, with the piece's emblem in the corner and
+// what the piece is and what to watch for beneath her. Longer write-ups
+// scroll; the heading always starts in the same place.
 export function ItemPage({ item, number }: ItemPageProps) {
   const facts = [
     { term: "Raagam", value: item.raagam },
@@ -38,6 +39,10 @@ export function ItemPage({ item, number }: ItemPageProps) {
       <div className="absolute inset-x-0 top-0 h-1/2">
         <Motes count={12} />
       </div>
+      <Emblem
+        name={item.emblem}
+        className="absolute top-[4%] right-[5%] size-14 text-gold-500 lg:top-10 lg:right-[8%] lg:size-20"
+      />
 
       <Reading className="piece-text">
         <div className="lg:my-auto">

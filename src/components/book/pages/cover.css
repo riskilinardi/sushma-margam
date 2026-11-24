@@ -94,14 +94,8 @@
   filter: saturate(1.02) contrast(1.04) brightness(0.95);
 }
 
-/* Gold brocade woven into the cover's silk, faint, and only towards the
-   edges, like the body of a saree around its border. */
+/* The cover's brocade (see book.css) comes in closer around her. */
 .leaf-front:has(.cover-title)::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: url("/silk.svg") center / 56px 72px;
   opacity: 0.1;
   mask-image: radial-gradient(
     ellipse 70% 65% at 50% 42%,

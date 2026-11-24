@@ -3,6 +3,7 @@ import { CoverPage } from "@/components/book/pages/CoverPage";
 import { GalleryPage } from "@/components/book/pages/GalleryPage";
 import { ItemPage } from "@/components/book/pages/ItemPage";
 import { LyricsPage } from "@/components/book/pages/LyricsPage";
+import { Petals } from "@/components/book/pages/Petals";
 import { ProgrammePage } from "@/components/book/pages/ProgrammePage";
 import { StoryPage } from "@/components/book/pages/StoryPage";
 import { TeachersPage } from "@/components/book/pages/TeachersPage";
@@ -25,7 +26,7 @@ const pages: BookPage[] = [
   })),
   { name: "Gallery", content: <GalleryPage />, fill: true },
   { name: "Lyrics", content: <LyricsPage />, fill: true },
-  { name: "Thank You", content: <ThanksPage /> },
+  { name: "Thank You", content: <ThanksPage />, over: <Petals /> },
 ];
 
 export default function Home() {

@@ -86,6 +86,23 @@ html:has(.book) {
   );
 }
 
+/* Gold brocade woven into the silk, faint, and only towards the edges, like
+   the body of a saree around its border. The middle, where the words are,
+   stays plain. */
+.leaf-front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: url("/silk.svg") center / 56px 72px;
+  opacity: 0.08;
+  mask-image: radial-gradient(
+    ellipse 75% 70% at 50% 50%,
+    transparent 50%,
+    #000 100%
+  );
+}
+
 /* The reverse of each page: plain silk inside the same gold frame. */
 .leaf-back {
   transform: rotateY(180deg);
@@ -160,6 +177,17 @@ html:has(.book) {
   animation: draw-down 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
 }
 
+/* A piece's emblem is drawn in as if inked, every line at the same steady
+   pace, so the short strokes finish first. */
+.leaf[data-settle="pending"] .leaf-front .emblem {
+  opacity: 0;
+}
+
+.leaf[data-settle="play"] .leaf-front .emblem * {
+  stroke-dasharray: 130;
+  animation: ink 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+}
+
 .leaf[data-settle="play"] .leaf-front [data-glint] {
   background-image:
     linear-gradient(
@@ -192,6 +220,13 @@ html:has(.book) {
 @keyframes draw-down {
   from {
     scale: 1 0;
+  }
+}
+
+@keyframes ink {
+  from {
+    stroke-dashoffset: 130;
+    fill-opacity: 0;
   }
 }
 
@@ -327,6 +362,10 @@ html:has(.book) {
   transition:
     opacity 0.8s ease,
     translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.dock-progress {
+  transition: clip-path 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .book[data-arriving] .dock {

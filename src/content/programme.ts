@@ -1,5 +1,6 @@
 import type { StaticImageData } from "next/image";
 import standing from "@/assets/sushma-standing.jpg";
+import type { EmblemName } from "@/components/ui/Emblem";
 
 export type LyricLine = {
   // In its own script, where Sushma has given it.
@@ -11,6 +12,9 @@ export type LyricLine = {
 export type ProgrammeItem = {
   slug: string;
   name: string;
+  // Its mark, from what the piece is about: Ganesha, Krishna's flute,
+  // Shiva's trident.
+  emblem: EmblemName;
   kind: string;
   tagline: string;
   story: string;
@@ -40,6 +44,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "pushpanjali",
     name: "Pushpanjali",
+    emblem: "lotus",
     kind: "Invocation",
     tagline: "An offering of flowers",
     story:
@@ -53,6 +58,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "ganesha-shlokam",
     name: "Ganesha Shlokam",
+    emblem: "ganesha",
     kind: "Prayer",
     tagline: "Remover of obstacles",
     story:
@@ -95,6 +101,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "jathiswaram",
     name: "Jathiswaram",
+    emblem: "bells",
     kind: "Pure Dance",
     tagline: "Melody meets rhythm",
     story:
@@ -107,6 +114,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "kannanai-paadu-maname",
     name: "Kannanai Paadu Maname",
+    emblem: "feather",
     kind: "Krishna Shabdam",
     tagline: "An ode to Krishna",
     story:
@@ -122,6 +130,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "unnai-ninaindhu",
     name: "Unnai Ninaindhu",
+    emblem: "flute",
     kind: "Krishna Varnam",
     tagline: "Thinking of you",
     story:
@@ -137,6 +146,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "nagendra-haraya",
     name: "Nagendra Haraya",
+    emblem: "serpent",
     kind: "Shiva Stotra",
     tagline: "Five sacred syllables",
     story:
@@ -153,6 +163,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "bala-gopala",
     name: "Bala Gopala",
+    emblem: "discus",
     kind: "Krishna",
     tagline: "Krishna, the protector",
     story:
@@ -168,6 +179,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "bho-shambho",
     name: "Bho Shambho",
+    emblem: "trident",
     kind: "Shiva Keertanam",
     tagline: "The Lord of Dance",
     story:
@@ -183,6 +195,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "thillana",
     name: "Thillana",
+    emblem: "bow",
     kind: "Finale",
     tagline: "A jubilant finale",
     story:
@@ -198,6 +211,7 @@ export const programme: ProgrammeItem[] = [
   {
     slug: "mangalam",
     name: "Mangalam",
+    emblem: "diya",
     kind: "Closing",
     tagline: "An auspicious farewell",
     story:

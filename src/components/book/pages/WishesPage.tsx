@@ -5,21 +5,35 @@ import { buttonClass } from "@/components/ui/Button";
 import { addWish, useGuestbook, type Wish } from "@/lib/guestbook";
 import { useIsNearby } from "../Book";
 import { labelClass, PageHeading } from "./PageHeading";
+import { WishLamps } from "./WishLamps";
 
 const fieldClass =
   "mt-1.5 block w-full rounded-sm border border-gold-500/30 bg-maroon-900/70 px-3 py-2.5 text-base text-ivory placeholder:text-ivory/40 focus:border-gold-200 focus:outline-none";
 
-// The guestbook. Wishes arrive live; guests can write once it is opened
-// from /admin on the day, and the wishes stay after it closes.
+// The guestbook. Wishes arrive live, each lighting a lamp on the arch over
+// the heading; guests can write once it is opened from /admin on the day,
+// and the wishes stay after it closes.
 export function WishesPage() {
   const { wishes, open, show } = useGuestbook(useIsNearby());
   const [writing, setWriting] = useState(false);
+  // After the evening the guestbook is closed and its wishes stay.
+  const over = !open && Boolean(wishes?.length);
 
   return (
     <div className="mx-auto flex h-full max-w-md flex-col text-center">
-      <PageHeading eyebrow="Guestbook" title="Wishes" />
-      <p data-settle className="mt-3 text-lg text-ivory/75 italic">
-        Leave a few words for Sushma on her big night.
+      {/* The arch of lamps stands on the heading's ornament. */}
+      <div className="relative pt-12 lg:pt-24">
+        <WishLamps
+          lit={wishes?.length ?? null}
+          className="absolute bottom-0 left-1/2 w-68 -translate-x-1/2 lg:w-[26rem]"
+        />
+        <PageHeading eyebrow="Guestbook" title="Wishes" />
+      </div>
+      <p data-settle className="mt-3 text-lg text-balance text-ivory/75 italic">
+        {over
+          ? "Words left for Sushma on her big night."
+          : "Leave a few words for Sushma on her big night."}
+        {open && " Each wish lights a lamp."}
       </p>
 
       {open && (

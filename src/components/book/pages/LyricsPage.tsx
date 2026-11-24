@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { Emblem } from "@/components/ui/Emblem";
 import { programme, songs } from "@/content/programme";
 import { useBook } from "../Book";
 import { labelClass } from "./PageHeading";
@@ -84,10 +85,15 @@ export function LyricsPage() {
         <StepButton label="Next song" onClick={() => step(1)} />
       </div>
 
+      {/* The woven border, knotted at the song's emblem. */}
       <div
         aria-hidden="true"
-        className="mx-auto mt-3 h-3 w-full max-w-xs shrink-0 zari-band text-gold-500/60"
-      />
+        className="mx-auto mt-2 flex w-full max-w-xs shrink-0 items-center gap-2 text-gold-500"
+      >
+        <span className="h-3 flex-1 zari-band opacity-60" />
+        <Emblem key={slug} name={song.emblem} className="size-7" />
+        <span className="h-3 flex-1 zari-band opacity-60" />
+      </div>
 
       <div
         id="lyrics"

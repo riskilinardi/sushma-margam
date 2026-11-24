@@ -44,6 +44,9 @@ export type BookPage = {
   // A page on a black ground, like the pieces. Turning between a dark page
   // and a light one passes through darkness instead of a page turn.
   dark?: boolean;
+  // Drawn across the whole page, over its content and frame, like the
+  // petals that fall on the last page.
+  over?: ReactNode;
 };
 
 type BookApi = {
@@ -409,6 +412,7 @@ export function Book({ pages, moments = {} }: BookProps) {
                   ) : (
                     <Fit>{page.content}</Fit>
                   )}
+                  {page.over}
                 </PageContext>
                 <div data-overlay="shadow" />
                 <div data-overlay="shade" />
