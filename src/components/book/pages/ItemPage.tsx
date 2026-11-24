@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import type { ProgrammeItem } from "@/content/programme";
 import { LyricsLink } from "./LyricsLink";
+import { MiniMes } from "./MiniMes";
 import { Motes } from "./Motes";
 import { labelClass } from "./PageHeading";
 import { Reading } from "./Reading";
@@ -38,6 +39,7 @@ export function ItemPage({ item, number }: ItemPageProps) {
       <div className="absolute inset-x-0 top-0 h-1/2">
         <Motes count={12} />
       </div>
+      {item.slug === "mangalam" && <MiniMes />}
 
       <Reading className="piece-text">
         <div className="lg:my-auto">
