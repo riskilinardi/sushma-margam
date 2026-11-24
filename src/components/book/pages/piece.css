@@ -25,7 +25,6 @@
 
 .piece-text {
   position: absolute;
-  z-index: 1;
   inset: 45% 1rem 0.75rem;
   display: flex;
   flex-direction: column;
