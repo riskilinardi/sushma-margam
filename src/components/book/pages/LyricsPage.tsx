@@ -99,10 +99,12 @@ export function LyricsPage() {
       >
         <ol className="space-y-5 py-5">
           {song.lyrics.map((line) => (
-            <li key={line.original}>
-              <p className="text-sm text-ivory/70">{line.original}</p>
+            <li key={line.transliteration}>
+              {line.original && (
+                <p className="text-sm text-ivory/70">{line.original}</p>
+              )}
               <p className="text-xl lg:text-2xl">{line.transliteration}</p>
-              <p className="text-gold-200/85 italic">{line.meaning}</p>
+              <p className="mt-0.5 text-gold-200/85 italic">{line.meaning}</p>
             </li>
           ))}
         </ol>

@@ -2,7 +2,8 @@ import type { StaticImageData } from "next/image";
 import standing from "@/assets/sushma-standing.jpg";
 
 export type LyricLine = {
-  original: string;
+  // In its own script, where Sushma has given it.
+  original?: string;
   transliteration: string;
   meaning: string;
 };
@@ -59,7 +60,37 @@ export const programme: ProgrammeItem[] = [
     watch:
       "The hand gestures (mudras) that depict Ganesha’s trunk, tusk, large ears and his big belly.",
     photo: standing,
-    lyrics: sampleLyrics("Ganesha Shlokam"),
+    lyrics: [
+      {
+        transliteration: "Vakratunda Mahakaya Suryakoti Samaprabha",
+        meaning:
+          "O Lord, with the curved trunk and mighty form, whose brilliance equals a million suns",
+      },
+      {
+        transliteration: "Nirvighnam Kuru Me Deva Sarvakaryeshu Sarvada",
+        meaning: "Please make all my undertakings free of obstacles, always",
+      },
+      {
+        transliteration: "Gajananam Gajananam Bhuta Ganadi Sevitam",
+        meaning:
+          "To the elephant-faced one, who is served and revered by the bhutas (elemental beings) and ganas (celestial attendants)",
+      },
+      {
+        transliteration: "Kapittha Jambu Phala Sara Bhakshitam",
+        meaning:
+          "Who partakes in the essence of Kapittha (wood apple) and Jambu (rose apple, jamun) fruits",
+      },
+      {
+        transliteration: "Uma Sutam Shoka Vinasha Karanam",
+        meaning:
+          "The son of Goddess Uma (Parvathi), who is the destroyer of all sorrows",
+      },
+      {
+        transliteration: "Namami Vighneshvara Pada Pankajam",
+        meaning:
+          "I bow down to the lotus feet of Lord Vighneshvara (the remover of obstacles)",
+      },
+    ],
   },
   {
     slug: "jathiswaram",
